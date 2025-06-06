@@ -28,7 +28,10 @@ export function getIndicatifCountry()
 {
      const countrySelect = document.getElementById("countryCode");
      const telInput = document.getElementById('telfiedl');
-    fetch("https://restcountries.com/v3.1/all")
+  const apiUrl = window.location.hostname === "localhost"
+        ? "https://restcountries.com/v3.1/all"
+        : "/api/countries";
+    fetch(apiUrl)
       .then(res => res.json())
       .then(data => {
         const countries = data
