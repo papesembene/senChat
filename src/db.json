@@ -1,0 +1,64 @@
+{
+    "users":
+    [
+        {
+            "id": 1,
+            "name": "Sems",
+            "telephone":"781157773",
+            "codecountry":"+221",
+            "status":"en ligne",
+            "avatar":"https://randomuser.me/api/por"
+
+        },
+        {
+            "id": 2,
+            "name": "SLD",
+            "telephone":"78 477 80 88",
+            "codecountry":"+221",
+            "status":"hors ligne",
+            "avatar":"https://randomuser.me/api/por"
+        }
+    ],
+    "conversations":
+    [
+        {
+            "id":1,
+            "participants":[1,2],
+            "type":"prive",
+            "name":"",
+            "lastMessage":"Hello, how are you?",
+            "lastActivity":"2023-10-01T12:00:00Z",
+            "avatar":"https://randomuser.me/api/por"
+        }
+    ],
+    "messages":
+    [
+        {
+            "id":1,
+            "conversationId":1,
+            "senderId":1,
+            "type":"text",
+            "content":"What's up?",
+            "timestamp":"2023-10-01T12:00:00Z",
+            "status":"envoye"
+
+        }
+    ],
+    "contacts":[
+        {
+            "id":1,
+            "name":"Diallo",
+            "telephone":"781157773",
+            "codecountry":"+221",
+            "ownerId":1
+        },
+        {
+            "id":2,
+            "name":"Pmd",
+            "telephone":"771234567",
+            "codecountry":"+221",
+            "ownerId":1
+        }
+    ]
+
+}
