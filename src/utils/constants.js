@@ -1,8 +1,8 @@
-import { createElement } from '../components/Function.js';
+import { createElement,createModalComponent } from '../components/Function.js';
 const btnicon = {
   message: (() => {
     const button = createElement('button', {
-      class: ' text-white p-2 rounded-full shadow-lg hover:bg-blue-600',
+      class: ' text-white p-2 rounded-full shadow-lg ',
       type: 'button',
       id: 'btnmessage',
      'title': 'Message',
@@ -41,7 +41,7 @@ const btnicon = {
   })(),
   story:(()=>{
     const button = createElement('button', {
-         class: 'text-white p-2 rounded-full shadow-lg hover:bg-blue-600',
+         class: 'text-white p-2 rounded-full shadow-lg ',
       type: 'button',
       id: 'btnstory',
      'title': 'Status',
@@ -57,7 +57,7 @@ const btnicon = {
   })(),
   channel:(()=>{
     const button = createElement('button', {
-      class: 'text-white p-2 rounded-full shadow-lg hover:bg-blue-600',
+      class: 'text-white p-2 rounded-full shadow-lg ',
       type: 'button',
       id: 'btnchannel',
         'title': 'Chaines',
@@ -71,7 +71,7 @@ const btnicon = {
   })(),
   groupe:(()=>{
     const button = createElement('button', {
-      class: 'text-white p-2 rounded-full shadow-lg hover:bg-blue-600',
+      class: 'text-white p-2 rounded-full shadow-lg ',
       type: 'button',
       id: 'btngroupe',
       'title': 'Groupes',
@@ -90,7 +90,7 @@ const btnicon = {
   })(),
   settings:(()=>{
     const button = createElement('button', {
-      class: 'text-white p-2 rounded-full shadow-lg hover:bg-blue-600',
+      class: 'text-white p-2 rounded-full shadow-lg ',
       style:{
         marginTop:'500px',
       },
@@ -117,7 +117,110 @@ const btnicon = {
 </svg>
     `
     return button;
-  })()
+  })(),
+  search:(()=>{
+    const btn = createElement('button',{
+      class: 'text-white p-2 rounded-full',
+      type: 'button',
+      id: 'search',
+      'title': '',
+    },)
+    btn.innerHTML=`
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+</svg>
+    `
+    return btn
+  })(),
+   send:(()=>{
+    const btn = createElement('button',{
+      class: 'text-white p-2 rounded-full',
+      type: 'button',
+      id: 'send',
+      'title': '',
+    },)
+    btn.innerHTML=`
+   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+</svg>
+    `
+    return btn
+  })(),
+dots: (() => {
+    const btn = createElement('button', {
+        class: 'text-white p-2 rounded-full relative',
+        type: 'button',
+        id: 'dot',
+        title: '',
+    });
+    
+    btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
+        </svg>
+    `;
+
+    // Créer le menu déroulant
+    const dropdownMenu = createElement('div', {
+        class: 'absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 hidden z-50',
+        id: 'dropdown-menu'
+    });
+
+    // Options du menu
+    const menuItems = [
+        { text: 'Infos du contact', icon: '👤' },
+        { text: 'Sélectionner des messages', icon: '✓' },
+        { text: 'Mode silencieux', icon: '🔕' },
+        { text: 'Messages éphémères', icon: '⏰' },
+        { text: 'Ajouter aux Favoris', icon: '⭐' },
+        { text: 'Fermer la discussion', icon: '🔒' },
+        { text: 'Signaler', icon: '⚠️' },
+        { text: 'Bloquer', icon: '🚫' },
+        { text: 'Effacer la discussion', icon: '🗑️' },
+        { text: 'Supprimer la discussion', icon: '❌' }
+    ];
+
+    // Créer les éléments du menu
+    menuItems.forEach(item => {
+        const menuItem = createElement('div', {
+            class: 'px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer flex items-center'
+        });
+        
+        menuItem.innerHTML = `
+            <span class="mr-3">${item.icon}</span>
+            <span>${item.text}</span>
+        `;
+        
+        // Ajouter l'événement click pour chaque élément
+        menuItem.addEventListener('click', () => {
+            console.log(`Action: ${item.text}`);
+            dropdownMenu.classList.add('hidden');
+        });
+        
+        dropdownMenu.appendChild(menuItem);
+    });
+
+    // Container pour le bouton et le menu
+    const container = createElement('div', { class: 'relative' });
+    container.appendChild(btn);
+    container.appendChild(dropdownMenu);
+
+    // Événement pour ouvrir/fermer le menu
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    // Fermer le menu si on clique ailleurs
+    document.addEventListener('click', (e) => {
+        if (!container.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+
+    return container;
+})()
+
 
 };
 export { btnicon };
