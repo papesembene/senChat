@@ -28,7 +28,7 @@ export function getIndicatifCountry()
 {
      const countrySelect = document.getElementById("countryCode");
      const telInput = document.getElementById('telfiedl');
-  const apiUrl = window.location.hostname === "localhost"
+     const apiUrl = window.location.hostname === "localhost"
         ? "https://restcountries.com/v3.1/all"
         : "/api/countries";
     fetch(apiUrl)

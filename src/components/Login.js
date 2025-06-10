@@ -18,11 +18,7 @@ export function ShowLoginForm()
         class:'flex flex-col items-center justify-center h-screen  w-full h-screen',
     },[
         form
-    ])
-    
-
-    
-   
+    ]) 
 }
 /**
  * 
@@ -55,13 +51,13 @@ export function createForm()
         createElement('div', { class: 'bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-6 rounded' }, [
             createElement('p', { class: 'text-sm text-yellow-800' }, 'Bienvenue sur SenChat. Nous allons vous envoyer un code de vérification par SMS.')
         ]),
-        createElement('div', { class: 'mb-4' }, [
-            createElement('label', { class: 'block text-sm font-medium text-gray-700 mb-2' }, 'Choisissez un pays'),
-            createElement('select', {
-                class: 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white',
-                id: 'countryCode',
-            })
-        ]),
+        // createElement('div', { class: 'mb-4' }, [
+        //     createElement('label', { class: 'block text-sm font-medium text-gray-700 mb-2' }, 'Choisissez un pays'),
+        //     createElement('select', {
+        //         class: 'w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white',
+        //         id: 'countryCode',
+        //     })
+        // ]),
         createElement('div', { class: 'mb-6' }, [
             createElement('label', { class: 'block text-sm font-medium text-gray-700 mb-2' }, 'Numéro de téléphone'),
             createInput({ 
@@ -119,7 +115,7 @@ export function createForm()
             createButton({ 
                 class: `text-${codeColors.green}-500 hover:text-${codeColors.green}-600 font-medium text-sm`,
                 onclick: () => {
-                    
+                    navigateTo('/register');
                 }
             }, 'Créer un nouveau compte')
         ]),

@@ -1,9 +1,11 @@
 import { ShowLoginForm } from './Login.js';
 import { ShowChat } from './Chat.js'; 
+import {ShowRegisterForm} from './Register.js'
 
 const routes = {
   '/': ShowLoginForm,
   '/chat': ShowChat,
+  '/register': ShowRegisterForm,
 };
 
 /**
