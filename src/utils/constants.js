@@ -1,7 +1,7 @@
 import { createElement,createModalComponent } from '../components/Function.js';
 import { navigateTo } from '../components/router.js';
 import { DisplayContact } from '../components/Contacts.js';
-import { showChatBase } from '../components/Chat.js';
+import { showChatBase } from '../components/ChatUI.js';
 const btnicon = {
   message: (() => {
     const button = createElement('button', {

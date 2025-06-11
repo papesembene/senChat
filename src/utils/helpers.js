@@ -74,3 +74,4 @@ export function resetButton(btn, originalText)
     btn.classList.remove('opacity-50', 'cursor-not-allowed');
     btn.innerHTML = originalText;
 }
+

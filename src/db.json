@@ -34,8 +34,8 @@
       ],
       "type": "prive",
       "name": "",
-      "lastMessage": "What's up?",
-      "lastActivity": "2023-10-01T12:00:00Z",
+      "lastMessage": "ww",
+      "lastActivity": "2025-06-11T23:53:58.047Z",
       "avatar": "https://randomuser.me/api/portraits/women/2.jpg"
     }
   ],
@@ -47,7 +47,7 @@
       "type": "text",
       "content": "What's up?",
       "timestamp": "2023-10-01T12:00:00Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "2",
@@ -56,7 +56,43 @@
       "type": "text",
       "content": "Hello, how are you?",
       "timestamp": "2023-10-01T12:05:00Z",
-      "status": "envoye"
+      "status": "lu"
+    },
+    {
+      "id": "1749685478352isaaq53dd",
+      "conversationId": 1,
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-11T23:44:38.352Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749685521942pr0j5cyfl",
+      "conversationId": 1,
+      "senderId": 2,
+      "type": "text",
+      "content": "cv et toi",
+      "timestamp": "2025-06-11T23:45:21.942Z",
+      "status": "lu"
+    },
+    {
+      "id": "17496860178192c96zvho3",
+      "conversationId": 1,
+      "senderId": 1,
+      "type": "text",
+      "content": "yagui cool",
+      "timestamp": "2025-06-11T23:53:37.820Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749686038035jj7lt9gox",
+      "conversationId": 1,
+      "senderId": 2,
+      "type": "text",
+      "content": "ww",
+      "timestamp": "2025-06-11T23:53:58.035Z",
+      "status": "lu"
     }
   ],
   "contacts": [

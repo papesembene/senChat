@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 /**
  * 
- * @returns 
+ * @description cette fonction permet de crrer un formulaire d'ajout nouveau contact 
  */
 
 export function createAddContactForm() {
@@ -32,14 +32,12 @@ export function createAddContactForm() {
           const name = formData.get('name').trim();
           const telephone = formData.get('telephone').trim();
           const codecountry = formData.get('codecountry').trim();
-          
-          // Validation
+    
           if (!name || !telephone) {
             alert('Veuillez remplir tous les champs obligatoires');
             return;
           }
-          
-          // Prép arer les données selon votre structure
+
           const contactData = {
             name: name,
             telephone: telephone,
@@ -48,7 +46,6 @@ export function createAddContactForm() {
           };
           
           try {
-            // Envoyer les données à l'API
             const response = await fetch(`${API_URL}/contacts`, {
               method: 'POST',
               headers: {
@@ -59,8 +56,6 @@ export function createAddContactForm() {
             
             if (response.ok) {
               console.log('Contact ajouté avec succès');
-              
-              // Retourner à la liste des contacts
               const barre = document.querySelector('.w-\\[35\\%\\]');
               if (barre) {
                 barre.innerHTML = '';
@@ -102,7 +97,7 @@ export function createAddContactForm() {
             name: 'name',
             required: true,
             class: 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none',
-            placeholder: 'Ex: Jean Dupont'
+            placeholder: 'Ex: Pape Sembene'
           })
         ]),
         
@@ -168,7 +163,6 @@ export function createAddContactForm() {
             type: 'button',
             class: 'flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors',
             onclick: () => {
-              // Retourner à la liste des contacts sans sauvegarder
               const barre = document.querySelector('.w-\\[35\\%\\]');
               if (barre) {
                 barre.innerHTML = '';
