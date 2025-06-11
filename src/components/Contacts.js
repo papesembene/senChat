@@ -1,6 +1,7 @@
 import { createElement } from "./Function.js";
 import { btnicon } from "../utils/constants.js";
 import { getCurrentUser } from "../Services/auth.js";
+import { showChatBase } from "./Chat.js";
 
 const API_URL = import.meta.env.VITE_API_URL;
 /**
@@ -138,7 +139,7 @@ function createAddContactForm() {
             type: 'button',
             class: 'flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors',
             onclick: () => {
-              // Retourner à la liste des contacts sans sauvegarder
+             
               const barre = document.querySelector('.w-\\[35\\%\\]');
               if (barre) {
                 barre.innerHTML = '';
@@ -193,7 +194,7 @@ export async function DisplayContact() {
         createElement('div', {
           class: 'flex gap-4 border-b cursor-pointer hover:bg-green-200 py-3 hover:scale-105 transition duration-300 ease-in-out',
           onclick: () => {
-            // Remplacer le contenu par le formulaire d'ajout de contact
+            
             const barre = document.querySelector('.w-\\[35\\%\\]');
             if (barre) {
               barre.innerHTML = '';
