@@ -98,7 +98,7 @@ add: (() => {
     id: 'add',
     'title': 'Nouvelle Discussion',
     onclick: () => {
-      const barre = document.querySelector('.w-\\[35\\%\\]');
+      const barre = document.getElementById('sidebar-content'); // <-- Correction ici
       if (barre) {
         barre.innerHTML = '';
         DisplayContact().then(contactElement => {
@@ -183,14 +183,14 @@ add: (() => {
     `
     return btn
   })(),
-  arrow_left:(()=>{
-    const btn = createElement('button',{
-      class: 'text-white p-2 rounded-full',
-      type: 'button',
-      id: 'arrow',
-      'title': '',
-      onclick: () => {
-      const barre = document.querySelector('.w-\\[35\\%\\]');
+  arrow_left: (() => {
+  const btn = createElement('button', {
+    class: 'text-white p-2 rounded-full',
+    type: 'button',
+    id: 'arrow',
+    'title': '',
+    onclick: () => {
+      const barre = document.getElementById('sidebar-content'); // <-- Correction ici
       if (barre) {
         barre.innerHTML = '';
         showChatBase({
@@ -200,7 +200,6 @@ add: (() => {
             if (window.renderChatArea) window.renderChatArea();
           }
         }).then(elements => {
-          console.log('Elements reçus:', elements);
           if (Array.isArray(elements)) {
             elements.forEach(el => {
               if (el && el.nodeType === Node.ELEMENT_NODE) {
@@ -209,11 +208,8 @@ add: (() => {
             });
           } else if (elements && elements.nodeType === Node.ELEMENT_NODE) {
             barre.appendChild(elements);
-          } else {
-            console.error('Elements reçus ne sont pas des noeuds DOM valides:', elements);
           }
         }).catch(error => {
-          console.error('Erreur lors du chargement de showChatBase:', error);
           const errorElement = createElement('div', {
             class: 'p-4 text-center text-red-500'
           }, 'Erreur lors du chargement du contenu par défaut');
@@ -221,8 +217,7 @@ add: (() => {
         });
       }
     }
-      
-    },)
+  });
     btn.innerHTML=`
    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>

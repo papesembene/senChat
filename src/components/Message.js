@@ -119,7 +119,7 @@ export async function sendMessage(inputMessage, selectedConversation) {
 
   const newMessage = {
     id: generateMessageId(),
-    conversationId: Number(selectedConversation.id),
+    conversationId: selectedConversation.id,
     senderId: Number(currentUser.id),
     type: 'text',
     content: inputMessage.trim(),
@@ -148,24 +148,6 @@ export async function sendMessage(inputMessage, selectedConversation) {
     // Met à jour la conversation (dernier message + date)
     await updateConversationLastActivity(selectedConversation.id, newMessage.content);
 
-    // Rafraîchir la liste des conversations après un court délai
-    setTimeout(() => {
-      const sidebar = document.getElementById('sidebar-content');
-      if (sidebar) {
-        sidebar.innerHTML = '';
-        import('./ChatUI.js').then(module => {
-          module.showChatBase({
-            onSelect: (conversation, user) => {
-              window.selectedConversation = conversation;
-              window.selectedUser = user;
-              if (window.renderChatArea) window.renderChatArea();
-            }
-          }).then(elements => {
-            elements.forEach(el => sidebar.appendChild(el));
-          });
-        });
-      }
-    }, 300);
 
     const responseUsers = await fetch(`${API_URL}/users`);
     const users = await responseUsers.json();

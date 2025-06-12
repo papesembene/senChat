@@ -1,7 +1,7 @@
 import { createElement } from "./Function.js";
 import { btnicon } from "../utils/constants.js";
 import { getCurrentUser } from "../Services/auth.js";
-import { showChatBase } from "./ChatUI.js";
+import { showChatBase, renderSelectedChat, startChatPolling } from "./ChatUI.js";
 import {createAddContactForm} from "./FormContact.js"
 import {AddGroupcomposant} from "./Groups.js"
 const API_URL = import.meta.env.VITE_API_URL;
@@ -166,9 +166,43 @@ export function ShowChat() {
 }
 
 
+async function selectContact(contact) {
+  const currentUser = getCurrentUser();
+  const conversations = await fetch(`${API_URL}/conversations`).then(res => res.json());
+  let conversation = conversations.find(conv =>
+    conv.type === 'prive' &&
+    conv.participants.includes(Number(currentUser.id)) &&
+    conv.participants.includes(Number(contact.id))
+  );
+  if (!conversation) {
+    const response = await fetch(`${API_URL}/conversations`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'prive',
+        participants: [Number(currentUser.id), Number(contact.id)],
+        lastMessage: '',
+        lastActivity: new Date().toISOString()
+      })
+    });
+    conversation = await response.json();       
+  }
 
-function selectContact(contact) {
-    // Fonction appelée quand on clique sur un contact
-    console.log('Contact sélectionné:', contact);
-    // Tu peux ici ouvrir une conversation avec ce contact
+  // Mets à jour les variables globales
+  window.selectedConversation = conversation;
+  window.selectedUser = contact;
+
+  // Affiche la zone de chat
+  const chatArea = document.getElementById('chat-area');
+  if (chatArea) {
+    if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);
+    const chatContent = await renderSelectedChat(conversation, contact, '', () => {});
+    chatArea.innerHTML = '';
+    if (Array.isArray(chatContent)) {
+      chatContent.forEach(el => chatArea.appendChild(el));
+    } else {
+      chatArea.appendChild(chatContent);
+    }
+    startChatPolling(conversation);
+  }
 }

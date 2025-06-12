@@ -16,6 +16,7 @@ export async function showChatBase({ onSelect }) {
     fetch(`${API_URL}/users`).then(res => res.json())
   ]);
 
+  conversations.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
   const chatHeader = createElement('div', { class: 'p-4 bg-gray-50 border-b border-gray-200' }, [
     createElement('div', { class: 'flex items-center justify-between mb-3' }, [
       createElement('h2', { class: 'text-lg font-medium text-gray-900' }, 'SenChat 🇸🇳'),
@@ -37,13 +38,17 @@ export async function showChatBase({ onSelect }) {
 
   const conversationList = createElement('div', {
     class: 'flex-1 overflow-y-auto bg-gray-50',
-    id: 'conversation-list'
+    
   });
 
-  conversations.forEach(conversation => {
-    if (!conversation.participants.includes(currentId)) return;
-    const otherParticipantId = conversation.participants.find(id => id !== currentId);
-    const otherParticipant = users.find(user => Number(user.id) === otherParticipantId);
+  for (const conversation of conversations) {
+    if (!conversation.participants.includes(currentId)) continue;
+    const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
+    let otherParticipant = users.find(user => Number(user.id) === Number(otherParticipantId));
+    if (!otherParticipant) {
+      const contacts = await fetch(`${API_URL}/contacts`).then(res => res.json());
+      otherParticipant = contacts.find(c => Number(c.id) === Number(otherParticipantId));
+    }
     const displayName = conversation.type === 'prive'
       ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
       : (conversation.name || 'Conversation de groupe');
@@ -74,7 +79,7 @@ export async function showChatBase({ onSelect }) {
       ])
     ]);
     conversationList.appendChild(convoItem);
-  });
+  }
 
   return [
     chatHeader,
@@ -87,17 +92,19 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
   const allMessages = await response.json();
 
   const filteredMessages = Array.isArray(allMessages)
-    ? allMessages
-      .filter(msg => Number(msg.conversationId) === Number(selectedConversation.id))
-      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-    : [];
+  ? allMessages
+    .filter(msg => String(msg.conversationId) === String(selectedConversation.id))
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+  : [];
 
   const displayName = selectedConversation.type === 'prive'
     ? (selectedUser ? selectedUser.name : 'Utilisateur inconnu')
     : (selectedConversation.name || 'Conversation de groupe');
   const initials = initial(displayName);
 
-  const messageElements = filteredMessages.map(msg => createMessageElement(msg));
+  const messageElements = filteredMessages.length
+    ? filteredMessages.map(msg => createMessageElement(msg))
+    : [createElement('div', { class: 'text-gray-400 text-center' }, "Aucun message. Commencez la discussion !")];
 
   return [
     createElement('div', { class: 'p-4 bg-white border-b border-gray-200 flex items-center ' }, [
@@ -173,21 +180,21 @@ export async function sendMessageFromInput(selectedConversation) {
   const value = input.value;
   await sendMessage(value, selectedConversation);
 
-  // Rafraîchir la sidebar pour afficher le dernier message
   setTimeout(async () => {
     const sidebar = document.getElementById('sidebar-content');
     if (sidebar) {
+      // Log pour debug
+      console.log('VIDAGE sidebar-content', sidebar.childNodes.length);
+      // Toujours vider avant d'ajouter
       sidebar.innerHTML = '';
-      const { showChatBase } = await import('./ChatUI.js');
-      showChatBase({
+      const elements = await showChatBase({
         onSelect: (conversation, user) => {
           window.selectedConversation = conversation;
           window.selectedUser = user;
           if (window.renderChatArea) window.renderChatArea();
         }
-      }).then(elements => {
-        elements.forEach(el => sidebar.appendChild(el));
       });
+      elements.forEach(el => sidebar.appendChild(el));
     }
   }, 300);
 
@@ -208,10 +215,10 @@ async function refreshMessages(selectedConversation) {
   const allMessages = await response.json();
 
   const filteredMessages = Array.isArray(allMessages)
-    ? allMessages
-      .filter(msg => Number(msg.conversationId) === Number(selectedConversation.id))
-      .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-    : [];
+  ? allMessages
+    .filter(msg => String(msg.conversationId) === String(selectedConversation.id))
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+  : [];
 
   const messagesContainer = document.getElementById('messages-container');
   if (messagesContainer) {

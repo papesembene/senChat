@@ -3,10 +3,6 @@ import { codeColors } from '../utils/colors.js';
 import { btnicon } from '../utils/constants.js';
 import { showChatBase, renderSelectedChat, renderDefaultChat, startChatPolling } from './ChatUI.js';
 
-let selectedConversation = null;
-let selectedUser = null;
-let inputMessage = '';
-
 export function ShowChat() {
   const barre = createElement('div', {
     class: 'w-[35%] h-full border-r border-gray-200 flex flex-col',
@@ -16,10 +12,10 @@ export function ShowChat() {
   showChatBase({
     onSelect: (conversation, user) => {
       if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);
-      selectedConversation = conversation;
-      selectedUser = user;
+      window.selectedConversation = conversation;
+      window.selectedUser = user;
       renderChatArea();
-      startChatPolling(selectedConversation);
+      startChatPolling(window.selectedConversation);
     }
   }).then(elements => {
     elements.forEach(el => barre.appendChild(el));
@@ -37,11 +33,6 @@ export function ShowChat() {
           btnicon.channel,
           btnicon.groupe,
           btnicon.settings,
-        //   createElement('img', {
-        //     src: 'https://cdn-icons-png.flaticon.com/512/25/25231.png',
-        //     alt: 'Logo',
-        //     class: 'w-8 h-8 rounded-full mt-4 cursor-pointer hover:bg-gray-200 p-1 transition-colors'
-        //   })
         ])
       ]),
       // Barre latérale des conversations
@@ -51,8 +42,8 @@ export function ShowChat() {
         class: 'w-[60%] h-full bg-green-200 flex flex-col',
         id: 'chat-area'
       }, [
-        selectedConversation
-          ? renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage)
+        window.selectedConversation
+          ? renderSelectedChat(window.selectedConversation, window.selectedUser, '', setInputMessage)
           : renderDefaultChat()
       ])
     ])
@@ -60,19 +51,24 @@ export function ShowChat() {
 }
 
 function setInputMessage(val) {
-  inputMessage = val;
-//   renderChatArea(); 
+  // Optionnel : window.inputMessage = val;
 }
 
 async function renderChatArea() {
   const chatArea = document.getElementById('chat-area');
   if (chatArea) {
     chatArea.innerHTML = '';
-    const newContent = await renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage);
-    if (Array.isArray(newContent)) {
-      newContent.forEach(el => chatArea.appendChild(el));
+    if (window.selectedConversation) {
+      const newContent = await renderSelectedChat(window.selectedConversation, window.selectedUser, '', setInputMessage);
+      if (Array.isArray(newContent)) {
+        newContent.forEach(el => chatArea.appendChild(el));
+      } else {
+        chatArea.appendChild(newContent);
+      }
     } else {
-      chatArea.appendChild(newContent);
+      chatArea.appendChild(renderDefaultChat());
     }
   }
 }
+
+window.renderChatArea = renderChatArea;
