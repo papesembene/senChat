@@ -15,7 +15,7 @@ export function ShowChat() {
       window.selectedConversation = conversation;
       window.selectedUser = user;
       renderChatArea();
-      startChatPolling(window.selectedConversation);
+      startChatPolling();
     }
   }).then(elements => {
     elements.forEach(el => barre.appendChild(el));

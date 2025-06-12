@@ -34,8 +34,8 @@
       ],
       "type": "prive",
       "name": "",
-      "lastMessage": "vvvvv",
-      "lastActivity": "2025-06-12T11:19:19.877Z",
+      "lastMessage": "yoo",
+      "lastActivity": "2025-06-12T12:03:06.092Z",
       "avatar": "https://randomuser.me/api/portraits/women/2.jpg"
     },
     {
@@ -45,8 +45,8 @@
         1,
         8852
       ],
-      "lastMessage": "yup",
-      "lastActivity": "2025-06-12T11:18:56.403Z"
+      "lastMessage": "paulllllll",
+      "lastActivity": "2025-06-12T11:41:40.469Z"
     }
   ],
   "messages": [
@@ -111,7 +111,7 @@
       "type": "text",
       "content": "yup",
       "timestamp": "2025-06-12T07:52:51.570Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "1749715294367r0sooq0e5",
@@ -120,7 +120,7 @@
       "type": "text",
       "content": "cv",
       "timestamp": "2025-06-12T08:01:34.367Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "1749716290827j1t3bc6lv",
@@ -129,7 +129,7 @@
       "type": "text",
       "content": "yh",
       "timestamp": "2025-06-12T08:18:10.828Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "1749716311067p27cpgy1e",
@@ -156,7 +156,7 @@
       "type": "text",
       "content": "yup",
       "timestamp": "2025-06-12T08:41:37.260Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "1749717748427ljiwprvip",
@@ -192,7 +192,7 @@
       "type": "text",
       "content": "laalaaa",
       "timestamp": "2025-06-12T08:52:01.064Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "17497186775645v4htgzfk",
@@ -201,7 +201,7 @@
       "type": "text",
       "content": "hhhh",
       "timestamp": "2025-06-12T08:57:57.564Z",
-      "status": "envoye"
+      "status": "lu"
     },
     {
       "id": "1749720327476huoet03es",
@@ -264,7 +264,52 @@
       "type": "text",
       "content": "vvvvv",
       "timestamp": "2025-06-12T11:19:19.855Z",
+      "status": "lu"
+    },
+    {
+      "id": "17497284919252m5eqjxxr",
+      "conversationId": "1",
+      "senderId": 1,
+      "type": "text",
+      "content": "blalalalala",
+      "timestamp": "2025-06-12T11:41:31.925Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749728500453uvqtmlkxo",
+      "conversationId": "0a47",
+      "senderId": 1,
+      "type": "text",
+      "content": "paulllllll",
+      "timestamp": "2025-06-12T11:41:40.453Z",
       "status": "envoye"
+    },
+    {
+      "id": "1749729752321q8g3zpbi4",
+      "conversationId": "1",
+      "senderId": 2,
+      "type": "text",
+      "content": "mdr",
+      "timestamp": "2025-06-12T12:02:32.321Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749729779549bfjok87mf",
+      "conversationId": "1",
+      "senderId": 1,
+      "type": "text",
+      "content": "yo",
+      "timestamp": "2025-06-12T12:02:59.549Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749729786079ie24hd6uj",
+      "conversationId": "1",
+      "senderId": 2,
+      "type": "text",
+      "content": "yoo",
+      "timestamp": "2025-06-12T12:03:06.079Z",
+      "status": "lu"
     }
   ],
   "contacts": [

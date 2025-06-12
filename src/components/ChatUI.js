@@ -202,10 +202,12 @@ export async function sendMessageFromInput(selectedConversation) {
   await refreshMessages(selectedConversation);
 }
 
-export function startChatPolling(selectedConversation) {
+export function startChatPolling() {
   clearInterval(chatPollingInterval);
   chatPollingInterval = setInterval(() => {
-    refreshMessages(selectedConversation);
+    if (window.selectedConversation) {
+      refreshMessages(window.selectedConversation);
+    }
   }, 1000);
   window.chatPollingInterval = chatPollingInterval;
 }
