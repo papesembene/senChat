@@ -193,7 +193,13 @@ add: (() => {
       const barre = document.querySelector('.w-\\[35\\%\\]');
       if (barre) {
         barre.innerHTML = '';
-        showChatBase().then(elements => {
+        showChatBase({
+          onSelect: (conversation, user) => {
+            window.selectedConversation = conversation;
+            window.selectedUser = user;
+            if (window.renderChatArea) window.renderChatArea();
+          }
+        }).then(elements => {
           console.log('Elements reçus:', elements);
           if (Array.isArray(elements)) {
             elements.forEach(el => {

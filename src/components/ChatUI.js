@@ -99,8 +99,6 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
 
   const messageElements = filteredMessages.map(msg => createMessageElement(msg));
 
-
-
   return [
     createElement('div', { class: 'p-4 bg-white border-b border-gray-200 flex items-center ' }, [
       createElement('div', { class: 'w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3' }, [
@@ -169,13 +167,30 @@ function initial(name) {
     .join('')
 }
 
-
-
 export async function sendMessageFromInput(selectedConversation) {
   const input = document.getElementById('message-input');
   if (!input) return;
   const value = input.value;
   await sendMessage(value, selectedConversation);
+
+  // Rafraîchir la sidebar pour afficher le dernier message
+  setTimeout(async () => {
+    const sidebar = document.getElementById('sidebar-content');
+    if (sidebar) {
+      sidebar.innerHTML = '';
+      const { showChatBase } = await import('./ChatUI.js');
+      showChatBase({
+        onSelect: (conversation, user) => {
+          window.selectedConversation = conversation;
+          window.selectedUser = user;
+          if (window.renderChatArea) window.renderChatArea();
+        }
+      }).then(elements => {
+        elements.forEach(el => sidebar.appendChild(el));
+      });
+    }
+  }, 300);
+
   input.value = '';
   await refreshMessages(selectedConversation);
 }
@@ -201,7 +216,7 @@ async function refreshMessages(selectedConversation) {
   const messagesContainer = document.getElementById('messages-container');
   if (messagesContainer) {
     messagesContainer.innerHTML = '';
-    filteredMessages.forEach(async msg => {
+    for (const msg of filteredMessages) {
       messagesContainer.appendChild(createMessageElement(msg));
       const currentUser = getCurrentUser();
       if (
@@ -214,7 +229,7 @@ async function refreshMessages(selectedConversation) {
           body: JSON.stringify({ status: 'lu' })
         });
       }
-    });
+    }
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 }
