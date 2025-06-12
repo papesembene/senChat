@@ -10,3 +10,6 @@ import { router } from './components/router.js';
 
 window.addEventListener('hashchange', router);
 window.addEventListener('DOMContentLoaded', router);
+
+
+//tester mes new cmd git
