@@ -217,21 +217,4 @@ async function refreshMessages(selectedConversation) {
     });
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
-
-  // Rafraîchir la liste des conversations (sidebar)
-  const sidebar = document.getElementById('sidebar-content');
-  if (sidebar) {
-    sidebar.innerHTML = '';
-    const currentUser = getCurrentUser();
-    const { showChatBase } = await import('./ChatUI.js');
-    showChatBase({
-      onSelect: (conversation, user) => {
-        window.selectedConversation = conversation;
-        window.selectedUser = user;
-        if (window.renderChatArea) window.renderChatArea();
-      }
-    }).then(elements => {
-      elements.forEach(el => sidebar.appendChild(el));
-    });
-  }
 }

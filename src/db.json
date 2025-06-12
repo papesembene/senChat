@@ -34,8 +34,8 @@
       ],
       "type": "prive",
       "name": "",
-      "lastMessage": "ww",
-      "lastActivity": "2025-06-11T23:53:58.047Z",
+      "lastMessage": "yup",
+      "lastActivity": "2025-06-12T07:52:51.587Z",
       "avatar": "https://randomuser.me/api/portraits/women/2.jpg"
     }
   ],
@@ -93,6 +93,15 @@
       "content": "ww",
       "timestamp": "2025-06-11T23:53:58.035Z",
       "status": "lu"
+    },
+    {
+      "id": "1749714771570mrqxw0gkt",
+      "conversationId": 1,
+      "senderId": 1,
+      "type": "text",
+      "content": "yup",
+      "timestamp": "2025-06-12T07:52:51.570Z",
+      "status": "envoye"
     }
   ],
   "contacts": [
