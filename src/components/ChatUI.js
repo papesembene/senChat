@@ -129,18 +129,30 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
           id: 'message-input',
           class: 'flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors',
           placeholder: 'Tapez votre message...',
+          oninput: (e) => {
+            inputValue = e.target.value;
+            updateSendBtn();
+          },
           onkeypress: e => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               sendMessageFromInput(selectedConversation);
+              inputEl.value = '';
+              inputValue = '';
+              updateSendBtn();
             }
           }
         }),
         createElement('button', {
           class: 'p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors',
-          onclick: () => sendMessageFromInput(selectedConversation)
+          onclick: () => {
+            sendMessageFromInput(selectedConversation);
+            inputEl.value = '';
+            inputValue = '';
+            updateSendBtn();
+          }
         }, [
-          btnicon.send
+          btnicon.micro
         ])
       ])
     ])

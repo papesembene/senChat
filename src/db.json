@@ -34,8 +34,8 @@
       ],
       "type": "prive",
       "name": "",
-      "lastMessage": "yoo",
-      "lastActivity": "2025-06-12T12:03:06.092Z",
+      "lastMessage": "ww",
+      "lastActivity": "2025-06-12T17:30:16.920Z",
       "avatar": "https://randomuser.me/api/portraits/women/2.jpg"
     },
     {
@@ -45,8 +45,8 @@
         1,
         8852
       ],
-      "lastMessage": "paulllllll",
-      "lastActivity": "2025-06-12T11:41:40.469Z"
+      "lastMessage": "gggg",
+      "lastActivity": "2025-06-12T17:29:50.936Z"
     }
   ],
   "messages": [
@@ -309,6 +309,33 @@
       "type": "text",
       "content": "yoo",
       "timestamp": "2025-06-12T12:03:06.079Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749749390913qxkhy9pt0",
+      "conversationId": "0a47",
+      "senderId": 1,
+      "type": "text",
+      "content": "gggg",
+      "timestamp": "2025-06-12T17:29:50.913Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749749402106fow4it7a4",
+      "conversationId": "1",
+      "senderId": 1,
+      "type": "text",
+      "content": "okkkkkk legui",
+      "timestamp": "2025-06-12T17:30:02.106Z",
+      "status": "lu"
+    },
+    {
+      "id": "1749749416903cd4ctmicp",
+      "conversationId": "1",
+      "senderId": 2,
+      "type": "text",
+      "content": "ww",
+      "timestamp": "2025-06-12T17:30:16.903Z",
       "status": "lu"
     }
   ],

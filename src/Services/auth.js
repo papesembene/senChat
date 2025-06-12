@@ -1,6 +1,9 @@
 import { navigateTo } from "../components/router.js";  
 import { showTosast } from "../utils/helpers.js";
 const API_URL = import.meta.env.VITE_API_URL;
+console.log(import.meta);
+
+
 
     /**
      * 
