@@ -57,6 +57,11 @@ export async function showChatBase({ onSelect }) {
       const contacts = await fetch(`${API_URL}/contacts`).then(res => res.json());
       otherParticipant = contacts.find(c => Number(c.id) === Number(otherParticipantId));
     }
+    if (!otherParticipant && conversation.type === 'prive') {
+      if (window.selectedConversation && window.selectedConversation.id === conversation.id && window.selectedUser) {
+        otherParticipant = window.selectedUser;
+      }
+    }
     const displayName = conversation.type === 'prive'
       ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
       : (conversation.name || 'Conversation de groupe');

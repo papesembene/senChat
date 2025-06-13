@@ -210,6 +210,21 @@ async function selectContact(contact) {
   window.selectedConversation = conversation;
   window.selectedUser = contact;
 
+  // Rafraîchir la sidebar pour afficher la nouvelle conversation
+  const sidebar = document.getElementById('sidebar-content');
+  if (sidebar) {
+    sidebar.innerHTML = '';
+    const { showChatBase } = await import('./ChatUI.js');
+    const elements = await showChatBase({
+      onSelect: (conversation, user) => {
+        window.selectedConversation = conversation;
+        window.selectedUser = user;
+        if (window.renderChatArea) window.renderChatArea();
+      }
+    });
+    elements.forEach(el => sidebar.appendChild(el));
+  }
+
   // Affiche la zone de chat
   const chatArea = document.getElementById('chat-area');
   if (chatArea) {
@@ -221,6 +236,6 @@ async function selectContact(contact) {
     } else {
       chatArea.appendChild(chatContent);
     }
-    startChatPolling(conversation);
+    startChatPolling();
   }
 }

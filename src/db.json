@@ -47,6 +47,26 @@
       ],
       "lastMessage": "gggg",
       "lastActivity": "2025-06-12T17:29:50.936Z"
+    },
+    {
+      "id": "2e8b",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "nkm",
+      "lastActivity": "2025-06-13T11:05:43.355Z"
+    },
+    {
+      "id": "bf4b",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "nkm",
+      "lastActivity": "2025-06-13T11:09:52.532Z"
     }
   ],
   "messages": [
@@ -337,6 +357,24 @@
       "content": "ww",
       "timestamp": "2025-06-12T17:30:16.903Z",
       "status": "lu"
+    },
+    {
+      "id": "174981274334272l0hpum8",
+      "conversationId": "2e8b",
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-13T11:05:43.342Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749812992518pvqu3xov0",
+      "conversationId": "bf4b",
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-13T11:09:52.518Z",
+      "status": "envoye"
     }
   ],
   "contacts": [
@@ -358,6 +396,20 @@
       "id": "8852",
       "name": "paul",
       "telephone": "772995851",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "e194",
+      "name": "amy",
+      "telephone": "772995855",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "e511",
+      "name": "rama",
+      "telephone": "772247676",
       "codecountry": "+221",
       "ownerId": "1"
     }
