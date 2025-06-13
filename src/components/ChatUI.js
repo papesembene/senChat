@@ -52,16 +52,33 @@ export async function showChatBase({ onSelect }) {
   for (const conversation of conversations) {
     if (!conversation.participants.includes(currentId)) continue;
     const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
-    let otherParticipant = users.find(user => Number(user.id) === Number(otherParticipantId));
+
+    let otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
+
     if (!otherParticipant) {
       const contacts = await fetch(`${API_URL}/contacts`).then(res => res.json());
-      otherParticipant = contacts.find(c => Number(c.id) === Number(otherParticipantId));
-    }
-    if (!otherParticipant && conversation.type === 'prive') {
-      if (window.selectedConversation && window.selectedConversation.id === conversation.id && window.selectedUser) {
-        otherParticipant = window.selectedUser;
+      otherParticipant = contacts.find(c =>
+        String(c.id) === String(otherParticipantId) ||
+        String(c.userId) === String(otherParticipantId) ||
+        String(c.contactId) === String(otherParticipantId) ||
+        (c.telephone && String(c.telephone) === String(otherParticipantId))
+      );
+      if (!otherParticipant && conversation.type === 'prive') {
+        const currentUser = getCurrentUser();
+        otherParticipant = contacts.find(c =>
+          (String(c.id) === String(otherParticipantId) ||
+           String(c.userId) === String(otherParticipantId) ||
+           String(c.contactId) === String(otherParticipantId)) &&
+          String(c.ownerId) === String(currentUser.id)
+        );
       }
     }
+
+    
+    if (!otherParticipant && window.selectedConversation && window.selectedConversation.id === conversation.id && window.selectedUser) {
+      otherParticipant = window.selectedUser;
+    }
+
     const displayName = conversation.type === 'prive'
       ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
       : (conversation.name || 'Conversation de groupe');

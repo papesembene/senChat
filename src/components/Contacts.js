@@ -203,14 +203,13 @@ async function selectContact(contact) {
         lastActivity: new Date().toISOString()
       })
     });
-    conversation = await response.json();       
-  }
+    conversation = await response.json();
 
-  // Mets à jour les variables globales
+    await fetch(`${API_URL}/contacts`).then(res => res.json());
+  }
   window.selectedConversation = conversation;
   window.selectedUser = contact;
 
-  // Rafraîchir la sidebar pour afficher la nouvelle conversation
   const sidebar = document.getElementById('sidebar-content');
   if (sidebar) {
     sidebar.innerHTML = '';
@@ -225,7 +224,7 @@ async function selectContact(contact) {
     elements.forEach(el => sidebar.appendChild(el));
   }
 
-  // Affiche la zone de chat
+
   const chatArea = document.getElementById('chat-area');
   if (chatArea) {
     if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);

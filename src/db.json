@@ -67,6 +67,66 @@
       ],
       "lastMessage": "nkm",
       "lastActivity": "2025-06-13T11:09:52.532Z"
+    },
+    {
+      "id": "3db5",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "boy",
+      "lastActivity": "2025-06-13T11:15:06.671Z"
+    },
+    {
+      "id": "adf3",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "seugn bi  nkm",
+      "lastActivity": "2025-06-13T11:20:29.411Z"
+    },
+    {
+      "id": "b90a",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "nkm",
+      "lastActivity": "2025-06-13T11:23:28.281Z"
+    },
+    {
+      "id": "16ab",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "seugn bi",
+      "lastActivity": "2025-06-13T11:30:50.698Z"
+    },
+    {
+      "id": "1196",
+      "type": "prive",
+      "participants": [
+        1,
+        null
+      ],
+      "lastMessage": "nkm",
+      "lastActivity": "2025-06-13T11:42:31.202Z"
+    },
+    {
+      "id": "3797",
+      "type": "prive",
+      "participants": [
+        1,
+        5579
+      ],
+      "lastMessage": "test",
+      "lastActivity": "2025-06-13T11:49:48.462Z"
     }
   ],
   "messages": [
@@ -375,6 +435,69 @@
       "content": "nkm",
       "timestamp": "2025-06-13T11:09:52.518Z",
       "status": "envoye"
+    },
+    {
+      "id": "1749813306660cfhhesnp6",
+      "conversationId": "3db5",
+      "senderId": 1,
+      "type": "text",
+      "content": "boy",
+      "timestamp": "2025-06-13T11:15:06.660Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749813629399368lqw93s",
+      "conversationId": "adf3",
+      "senderId": 1,
+      "type": "text",
+      "content": "seugn bi  nkm",
+      "timestamp": "2025-06-13T11:20:29.399Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749813808267aig53r0q8",
+      "conversationId": "b90a",
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-13T11:23:28.267Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749814250684ck4x7nt3o",
+      "conversationId": "16ab",
+      "senderId": 1,
+      "type": "text",
+      "content": "seugn bi",
+      "timestamp": "2025-06-13T11:30:50.684Z",
+      "status": "envoye"
+    },
+    {
+      "id": "17498149363354gei4l2gi",
+      "conversationId": "1196",
+      "senderId": 1,
+      "type": "text",
+      "content": "cc",
+      "timestamp": "2025-06-13T11:42:16.336Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749814951189xxa0dv0lw",
+      "conversationId": "1196",
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-13T11:42:31.190Z",
+      "status": "envoye"
+    },
+    {
+      "id": "1749815388451x8m2xalsn",
+      "conversationId": "3797",
+      "senderId": 1,
+      "type": "text",
+      "content": "test",
+      "timestamp": "2025-06-13T11:49:48.451Z",
+      "status": "envoye"
     }
   ],
   "contacts": [
@@ -410,6 +533,48 @@
       "id": "e511",
       "name": "rama",
       "telephone": "772247676",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "d4ba",
+      "name": "bachir",
+      "telephone": "777070000",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "367a",
+      "name": "leyty",
+      "telephone": "789807770",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "d8a6",
+      "name": "diewrin",
+      "telephone": "779086079",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "df3b",
+      "name": "bamba",
+      "telephone": "798217789",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "9a6d",
+      "name": "zey",
+      "telephone": "776098807",
+      "codecountry": "+221",
+      "ownerId": "1"
+    },
+    {
+      "id": "5579",
+      "name": "test",
+      "telephone": "785050600",
       "codecountry": "+221",
       "ownerId": "1"
     }
