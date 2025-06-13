@@ -38,10 +38,12 @@ export function createForm()
         createElement('div', { class: 'text-center mb-8' }, [
             createElement('div', { class: 'flex justify-center mb-4' }, [
                 createElement('div', { class: `inline-flex items-center justify-center w-20 h-20 bg-${codeColors.green}-500 rounded-full shadow-xl` }, [
-                    createElement('img',{
-                        src:'src/conversation.png',
-                        class:'w-12'
-                    })
+                    createElement('img', {
+                        src: 'https://cdn-icons-png.flaticon.com/512/2462/2462719.png',
+                        class: 'w-12'
+                        })
+
+
                   
                 ])
             ]),

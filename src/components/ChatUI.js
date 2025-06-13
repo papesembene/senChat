@@ -195,9 +195,6 @@ export async function sendMessageFromInput(selectedConversation) {
   setTimeout(async () => {
     const sidebar = document.getElementById('sidebar-content');
     if (sidebar) {
-      // Log pour debug
-      console.log('VIDAGE sidebar-content', sidebar.childNodes.length);
-      // Toujours vider avant d'ajouter
       sidebar.innerHTML = '';
       const elements = await showChatBase({
         onSelect: (conversation, user) => {
