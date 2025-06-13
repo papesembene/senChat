@@ -45,7 +45,7 @@ export async function showChatBase({ onSelect }) {
   ]);
 
   const conversationList = createElement('div', {
-    class: 'flex-1 overflow-y-auto bg-gray-50',
+    class: 'flex-1 overflow-y-auto bg-gray-100',
     
   });
 
