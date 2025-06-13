@@ -2,11 +2,19 @@ import { createElement, createButton } from './Function.js';
 import { btnicon } from '../utils/constants.js'
 import { getCurrentUser } from '../Services/auth.js';
 import { createMessageElement, sendMessage } from './Message.js';
-
+import { initial } from '../utils/helpers.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export let chatPollingInterval = null;
 
+/**
+ * @function showChatBase
+ * @param {Function} param0.onSelect - Callback function to handle conversation selection
+ * @description
+ * Affiche la liste des conversations de chat avec les utilisateurs.
+ * Cette fonction récupère les conversations et les utilisateurs depuis l'API,
+ * trie les conversations par date de dernière activité, et crée une interface utilisateur
+ */
 export async function showChatBase({ onSelect }) {
   const currentUser = getCurrentUser();
   const currentId = Number(currentUser.id);
@@ -87,6 +95,19 @@ export async function showChatBase({ onSelect }) {
   ];
 }
 
+/**
+ * en français
+ * @function renderSelectedChat
+ * @description
+ * Affiche la conversation sélectionnée avec les messages et l'interface de saisie.
+ * Cette fonction récupère les messages de la conversation sélectionnée, les affiche dans l'ordre chronologique,
+ * et crée une interface utilisateur pour envoyer de nouveaux messages.
+ * @returns {Promise<Array>} Un tableau d'éléments HTML représentant la conversation sélectionnée.    
+ * @param {Object} selectedConversation - La conversation sélectionnée.
+ * @param {Object} selectedUser - L'utilisateur sélectionné pour la conversation privée.
+ * @param {string} inputMessage - Le message saisi par l'utilisateur.
+ * @param {Function} setInputMessage - Fonction pour mettre à jour le message saisi.
+ */
 export async function renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage) {
   const response = await fetch(`${API_URL}/messages`);
   const allMessages = await response.json();
@@ -159,6 +180,13 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
   ];
 }
 
+/**
+ * 
+ * @returns Un élément div HTML représentant l'interface de chat par défaut.
+ * @description
+ * Crée une interface utilisateur de chat par défaut qui s'affiche lorsque aucune conversation n'est sélectionnée.
+ * Cette fonction affiche un message de bienvenue et invite l'utilisateur à sélectionner une conversation pour commencer à chatter.
+ */
 export function renderDefaultChat() {
   return createElement('div', {
     class: 'flex-1 flex items-center justify-center bg-gray-50'
@@ -180,12 +208,17 @@ export function renderDefaultChat() {
   ]);
 }
 
-function initial(name) {
-  return name.split(' ').map(word => word.charAt(0).toUpperCase())
-    .slice(0, 2)
-    .join('')
-}
 
+/**
+ * @description
+ * Envoie un message à la conversation sélectionnée et met à jour l'interface utilisateur.
+ * Cette fonction récupère la valeur du champ de saisie de message, envoie le message à l'API,
+ * et rafraîchit la liste des messages de la conversation sélectionnée.
+ * @async
+ * @function sendMessageFromInput
+ * @param {Object} selectedConversation - La conversation sélectionnée dans laquelle envoyer le message.
+ * @returns {Promise<void>} - Une promesse qui se résout lorsque le message est envoyé et l'interface utilisateur est mise à jour.
+ */
 export async function sendMessageFromInput(selectedConversation) {
   const input = document.getElementById('message-input');
   if (!input) return;
@@ -211,6 +244,14 @@ export async function sendMessageFromInput(selectedConversation) {
   await refreshMessages(selectedConversation);
 }
 
+/**
+ * @function startChatPolling
+ * @description
+ * Démarre le polling pour rafraîchir les messages de la conversation sélectionnée.
+ * Cette fonction utilise `setInterval` pour appeler `refreshMessages` toutes les secondes,
+ * afin de mettre à jour l'interface utilisateur avec les nouveaux messages.
+ * @returns {void}
+ */
 export function startChatPolling() {
   clearInterval(chatPollingInterval);
   chatPollingInterval = setInterval(() => {
@@ -220,7 +261,15 @@ export function startChatPolling() {
   }, 1000);
   window.chatPollingInterval = chatPollingInterval;
 }
-
+/**
+ * Rafraîchit les messages de la conversation sélectionnée.
+ * Cette fonction récupère les messages de l'API, filtre ceux qui appartiennent à la conversation sélectionnée,
+ * et met à jour l'interface utilisateur avec les messages triés par date.
+ * @async
+ * @function refreshMessages
+ * @param {Object} selectedConversation - La conversation sélectionnée pour laquelle rafraîchir les messages.
+ * @returns {Promise<void>} - Une promesse qui se résout lorsque les messages sont rafraîchis et l'interface utilisateur est mise à jour.
+ */
 async function refreshMessages(selectedConversation) {
   const response = await fetch(`${API_URL}/messages`);
   const allMessages = await response.json();

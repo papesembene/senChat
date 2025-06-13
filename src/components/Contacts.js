@@ -5,7 +5,11 @@ import { showChatBase, renderSelectedChat, startChatPolling } from "./ChatUI.js"
 import {createAddContactForm} from "./FormContact.js"
 import {AddGroupcomposant} from "./Groups.js"
 const API_URL = import.meta.env.VITE_API_URL;
-
+/**
+ * 
+ * @returns Un élément div HTML contenant la liste des contacts
+ * @description Crée une div qui contient l'en-tête des contacts et la liste des contacts de l'utilisateur actuel.
+ */
 export async function DisplayContact() {
   const [contacts] = await Promise.all([
     fetch(`${API_URL}/contacts`).then(res => res.json())
@@ -89,6 +93,12 @@ export async function DisplayContact() {
   return contactContainer;
 }
 
+/**
+ * 
+ * @returns Un élément div HTML contenant la barre latérale du chat
+ * @description Crée une div qui contient la barre latérale des conversations et la zone de chat principale.
+ * Cette fonction initialise la conversation sélectionnée et l'utilisateur, et démarre le polling pour les messages.
+ */
 export function ShowChat() {
   const barre = createElement('div', { 
     class: 'w-[35%] h-full border-r border-gray-200 flex flex-col',
@@ -165,7 +175,15 @@ export function ShowChat() {
     });
 }
 
-
+/**
+ * @description Fonction pour sélectionner un contact et afficher la conversation associée
+ * Elle vérifie si une conversation privée existe entre l'utilisateur actuel et le contact sélectionné.
+ * Si elle n'existe pas, elle en crée une nouvelle.
+ * Ensuite, elle met à jour les variables globales pour la conversation et l'utilisateur sélectionné,
+ * et affiche la zone de chat avec le contenu de la conversation.
+ * @param {Object} contact - L'objet contact sélectionné contenant les informations du contact.
+ * @return {Promise<void>} - Une promesse qui se résout lorsque la conversation est affichée.
+ */
 async function selectContact(contact) {
   const currentUser = getCurrentUser();
   const conversations = await fetch(`${API_URL}/conversations`).then(res => res.json());

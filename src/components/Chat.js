@@ -2,7 +2,12 @@ import { createElement } from './Function.js';
 import { codeColors } from '../utils/colors.js';
 import { btnicon } from '../utils/constants.js';
 import { showChatBase, renderSelectedChat, renderDefaultChat, startChatPolling } from './ChatUI.js';
-
+/**
+ * 
+ * @returns Un élément div HTML contenant la structure de la zone de chat
+ * @description Crée une div qui contient la barre latérale des conversations et la zone de chat principale.
+ * Cette fonction initialise également la conversation sélectionnée et l'utilisateur, et démarre le polling pour les messages.
+ */
 export function ShowChat() {
   const barre = createElement('div', {
     class: 'w-[35%] h-full border-r border-gray-200 flex flex-col',
@@ -54,6 +59,10 @@ function setInputMessage(val) {
   // Optionnel : window.inputMessage = val;
 }
 
+/**
+ * Fonction pour mettre à jour la zone de chat avec la conversation sélectionnée.
+ * Elle vide le contenu actuel de la zone de chat et affiche la conversation sélectionnée.
+ */
 async function renderChatArea() {
   const chatArea = document.getElementById('chat-area');
   if (chatArea) {

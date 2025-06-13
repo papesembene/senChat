@@ -75,3 +75,15 @@ export function resetButton(btn, originalText)
     btn.innerHTML = originalText;
 }
 
+/**
+ * 
+ * @param {string} name - Le nom complet de l'utilisateur.
+ * @returns {string} - Les deux premières lettres du nom en majuscules.
+ * @description
+ * Prend un nom complet et retourne les deux premières lettres en majuscules.
+ */
+export function initial(name) {
+  return name.split(' ').map(word => word.charAt(0).toUpperCase())
+    .slice(0, 2)
+    .join('')
+}
