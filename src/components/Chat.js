@@ -10,7 +10,7 @@ import { showChatBase, renderSelectedChat, renderDefaultChat, startChatPolling }
  */
 export function ShowChat() {
   const barre = createElement('div', {
-    class: 'w-[35%] h-full border-r border-gray-200 flex flex-col',
+    class: 'w-full md:w-1/3 h-full border-r border-gray-200 flex flex-col',
     id: 'sidebar-content'
   });
 
@@ -27,7 +27,8 @@ export function ShowChat() {
   });
 
   return createElement('div', {
-    class: 'w-full h-screen bg-gray-150 flex items-center justify-center',
+    // class: 'w-full h-screen bg-gray-150 flex items-center justify-center',
+    class:'bg-white flex flex-col md:flex-row rounded-lg shadow-lg w-full max-w-[1400px] mx-2 md:mx-4 h-screen md:h-[850px] overflow-hidden'
   }, [
     createElement('div', { class: 'bg-white flex rounded-lg shadow-lg w-[1400px] mx-4 h-[850px] overflow-hidden' }, [
       // Barre latérale gauche
@@ -44,7 +45,7 @@ export function ShowChat() {
       barre,
       // Zone de chat principale
       createElement('div', {
-        class: 'w-[60%] h-full bg-green-200 flex flex-col',
+        class: 'w-full md:w-2/3 h-full bg-green-200 flex flex-col',
         id: 'chat-area'
       }, [
         window.selectedConversation

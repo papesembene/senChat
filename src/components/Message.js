@@ -28,6 +28,34 @@ export function createMessageElement(msg) {
   const currentUserId = getCurrentUser().id;
   const isSentByCurrentUser = Number(msg.senderId) === Number(currentUserId);
 
+  const messageContent = [];
+
+  // Vérifie le type de message et crée le contenu approprié
+  if (msg.type === 'text') {
+    messageContent.push(createElement('p', { class: 'text-sm break-words' }, msg.content));
+  } else if (msg.type === 'audio' && msg.content) {
+    const audioEl = createElement('audio', {
+      controls: true,
+      src: msg.content,
+      class: 'w-full'
+    });
+    // Désactive le polling pendant la lecture
+    audioEl.addEventListener('play', () => {
+      if (window.chatPollingInterval) clearInterval(window.chatPollingInterval);
+    });
+    // Relance le polling à la fin
+    audioEl.addEventListener('ended', () => {
+      if (window.startChatPolling) window.startChatPolling();
+    });
+    audioEl.addEventListener('pause', () => {
+      // Si l'utilisateur met en pause à la fin, relance le polling
+      if (audioEl.currentTime === audioEl.duration) {
+        if (window.startChatPolling) window.startChatPolling();
+      }
+    });
+    messageContent.push(audioEl);
+  }
+
   return createElement('div', {
     class: `flex items-start ${isSentByCurrentUser ? 'justify-end' : ''}`,
     'data-message-id': msg.id
@@ -35,7 +63,7 @@ export function createMessageElement(msg) {
     createElement('div', {
       class: `${isSentByCurrentUser ? 'bg-green-500 text-white' : 'bg-white text-gray-800'} rounded-lg p-3 max-w-xs shadow-sm relative`
     }, [
-      createElement('p', { class: 'text-sm break-words' }, msg.content),
+      ...messageContent,
       createElement('div', { class: 'flex items-center justify-between mt-1' }, [
         createElement('span', {
           class: `text-xs ${isSentByCurrentUser ? 'text-green-100' : 'text-gray-500'}`
@@ -56,7 +84,7 @@ export function getStatusClass(status) {
   switch (status) {
     case 'envoye': return 'text-green-200';
     case 'recu': return 'text-green-200';
-    case 'lu': return 'text-green-200';
+    case 'lu': return 'text-blue-400';
     case 'echec': return 'text-red-300';
     default: return 'text-gray-300';
   }
@@ -146,7 +174,7 @@ export async function sendMessage(inputMessage, selectedConversation) {
     updateMessageStatus(newMessage.id, 'envoye');
 
     // Met à jour la conversation (dernier message + date)
-    await updateConversationLastActivity(selectedConversation.id, newMessage.content);
+    await updateConversationLastActivity(selectedConversation.id, newMessage.content,'text');
 
 
     const responseUsers = await fetch(`${API_URL}/users`);
@@ -170,20 +198,18 @@ export async function sendMessage(inputMessage, selectedConversation) {
 /**
  * Met à jour la dernière activité d'une conversation
  */
-async function updateConversationLastActivity(conversationId, lastMessage) {
+async function updateConversationLastActivity(conversationId, lastMessage, lastMessageType) {
   try {
     const updateData = {
       lastMessage: lastMessage,
+      lastMessageType: lastMessageType,
       lastActivity: new Date().toISOString()
     };
-
-    const response = await fetch(`${API_URL}/conversations/${conversationId}`, {
+    await fetch(`${API_URL}/conversations/${conversationId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updateData)
     });
-
-    if (!response.ok) throw new Error('Erreur lors de la mise à jour de la conversation');
   } catch (error) {
     console.error('Erreur lors de la mise à jour de la conversation:', error);
   }

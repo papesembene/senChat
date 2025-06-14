@@ -3,6 +3,7 @@ import { btnicon } from '../utils/constants.js'
 import { getCurrentUser } from '../Services/auth.js';
 import { createMessageElement, sendMessage } from './Message.js';
 import { initial } from '../utils/helpers.js';
+import { startRecording, stopRecording, isRecording, formatSeconds } from './VoiceMessage.js';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export let chatPollingInterval = null;
@@ -105,8 +106,14 @@ export async function showChatBase({ onSelect }) {
           createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, displayName),
           createElement('span', { class: 'text-xs text-gray-500' }, conversation.lastActivity ? formatTime(conversation.lastActivity) : '')
         ]),
-        createElement('p', { class: 'text-sm text-gray-600 truncate' }, conversation.lastMessage || 'Aucun message')
+        createElement('p', { class: 'text-sm text-gray-600 truncate' }, 
+        conversation.lastMessageType === 'audio'
+          ? '🎤 Message vocal'
+          : (conversation.lastMessage || 'Aucun message')
+      )
+        // createElement('p', { class: 'text-sm text-gray-600 truncate' }, conversation.lastMessage || 'Aucun message')
       ])
+      
     ]);
     conversationList.appendChild(convoItem);
   }
@@ -117,6 +124,9 @@ export async function showChatBase({ onSelect }) {
   ];
 }
 
+  let recordingState = false;
+  let recordingTimer = null;
+  let recordingSeconds = 0;
 /**
  * en français
  * @function renderSelectedChat
@@ -131,6 +141,8 @@ export async function showChatBase({ onSelect }) {
  * @param {Function} setInputMessage - Fonction pour mettre à jour le message saisi.
  */
 export async function renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage) {
+   let inputValue = inputMessage || '';
+ 
   const response = await fetch(`${API_URL}/messages`);
   const allMessages = await response.json();
 
@@ -168,31 +180,62 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
     createElement('div', { class: 'flex-1 overflow-y-auto p-4 space-y-4', id: 'messages-container' }, messageElements),
     createElement('div', { class: 'p-4 bg-white border-t border-gray-200' }, [
       createElement('div', { class: 'flex items-center space-x-3' }, [
-        createElement('input', {
-          id: 'message-input',
-          class: 'flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors',
-          placeholder: 'Tapez votre message...',
-          oninput: (e) => {
-            inputValue = e.target.value;
-            updateSendBtn();
-          },
-          onkeypress: e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              sendMessageFromInput(selectedConversation);
-              inputEl.value = '';
-              inputValue = '';
-              updateSendBtn();
+        recordingState
+        ? createElement('div', { class: 'flex-1 flex items-center space-x-2' }, [
+            createElement('span', { class: 'animate-pulse text-green-600 font-bold' }, '●'),
+            createElement('span', { id: 'recording-timer', class: 'font-mono text-gray-700' }, formatSeconds(recordingSeconds)),
+            createElement('span', { class: 'text-gray-500' }, 'Enregistrement...'),
+            createElement('button', {
+              class: 'ml-2 px-3 py-1 bg-red-500 text-white rounded-full',
+              onclick: async () => {
+                await stopRecording();
+                clearInterval(recordingTimer);
+                recordingState = false;
+                setInputMessage('');
+                window.renderChatArea && window.renderChatArea();
+              }
+            }, 'Stop')
+          ])
+        : createElement('input', {
+            id: 'message-input',
+            class: 'flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors',
+            placeholder: 'Tapez votre message...',
+            value: inputValue,
+            oninput: (e) => {
+              inputValue = e.target.value;
+            },
+            onkeypress: e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessageFromInput(selectedConversation);
+                inputValue = '';
+              }
             }
-          }
-        }),
+          }),
         createElement('button', {
           class: 'p-2 bg-green-500 hover:bg-green-600 rounded-full transition-colors',
-          onclick: () => {
-            sendMessageFromInput(selectedConversation);
-            inputEl.value = '';
-            inputValue = '';
-            updateSendBtn();
+          onclick: async () => {
+            if (inputValue.trim() === '') {
+              if (!recordingState) {
+                await startRecording(selectedConversation);
+                recordingState = true;
+                recordingSeconds = 0;
+                recordingTimer = setInterval(() => {
+                  recordingSeconds++;
+                  const timerEl = document.getElementById('recording-timer');
+                  if (timerEl) timerEl.textContent = formatSeconds(recordingSeconds);
+                }, 1000);
+                window.renderChatArea && window.renderChatArea();
+              } else {
+                await stopRecording();
+                clearInterval(recordingTimer);
+                recordingState = false;
+                window.renderChatArea && window.renderChatArea();
+              }
+            } else {
+              sendMessageFromInput(selectedConversation);
+              inputValue = '';
+            }
           }
         }, [
           btnicon.micro
@@ -280,9 +323,10 @@ export function startChatPolling() {
     if (window.selectedConversation) {
       refreshMessages(window.selectedConversation);
     }
-  }, 1000);
+  }, 3000);
   window.chatPollingInterval = chatPollingInterval;
 }
+window.startChatPolling = startChatPolling;
 /**
  * Rafraîchit les messages de la conversation sélectionnée.
  * Cette fonction récupère les messages de l'API, filtre ceux qui appartiennent à la conversation sélectionnée,
@@ -322,3 +366,4 @@ async function refreshMessages(selectedConversation) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 }
+
