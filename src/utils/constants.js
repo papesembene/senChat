@@ -2,7 +2,7 @@ import { createElement,createModalComponent } from '../components/Function.js';
 import { navigateTo } from '../components/router.js';
 import { DisplayContact } from '../components/Contacts.js';
 import { showChatBase } from '../components/ChatUI.js';
-import { showStaticStories } from '../components/Stories.js'; // Ajoute cet import
+import { showStories } from '../components/Stories.js'; 
 const btnicon = {
   message: (() => {
   const button = createElement('button', {
@@ -43,11 +43,12 @@ const btnicon = {
     type: 'button',
     id: 'btnstory',
     title: 'Status',
-    onclick: () => {
+    onclick: async() => {
       const sidebar = document.getElementById('sidebar-content');
       if (sidebar) {
         sidebar.innerHTML = '';
-        sidebar.appendChild(showStaticStories());
+        const storiesEl = await showStories();
+      sidebar.appendChild(storiesEl);
       }
     }
   });

@@ -30,7 +30,8 @@ export function ShowChat() {
     class: 'min-h-screen w-full flex items-center justify-center bg-gray-100',
   }, [
     createElement('div', { 
-      class: 'flex flex-col md:flex-row bg-white rounded-lg shadow-lg w-full max-w-[1400px] h-[90vh] overflow-hidden' 
+      class: 'flex flex-col md:flex-row bg-white rounded-lg shadow-lg w-full max-w-[1400px] h-[90vh] overflow-hidden' ,
+      id: 'main-container'
     }, [
      
       createElement('div', { 
@@ -42,6 +43,7 @@ export function ShowChat() {
           btnicon.channel,
           btnicon.groupe,
           btnicon.settings,
+          btnicon.settings
         ])
       ]),
       // Sidebar des conversations
