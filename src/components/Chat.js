@@ -27,12 +27,15 @@ export function ShowChat() {
   });
 
   return createElement('div', {
-    // class: 'w-full h-screen bg-gray-150 flex items-center justify-center',
-    class:'bg-white flex flex-col md:flex-row rounded-lg shadow-lg w-full max-w-[1400px] mx-2 md:mx-4 h-screen md:h-[850px] overflow-hidden'
+    class: 'min-h-screen w-full flex items-center justify-center bg-gray-100',
   }, [
-    createElement('div', { class: 'bg-white flex rounded-lg shadow-lg w-[1400px] mx-4 h-[850px] overflow-hidden' }, [
-      // Barre latérale gauche
-      createElement('div', { class: `w-[5%] h-full bg-${codeColors.green}-500 flex flex-col items-center py-4` }, [
+    createElement('div', { 
+      class: 'flex flex-col md:flex-row bg-white rounded-lg shadow-lg w-full max-w-[1400px] h-[90vh] overflow-hidden' 
+    }, [
+     
+      createElement('div', { 
+        class: 'hidden md:flex w-[5%] h-full bg-green-500 flex-col items-center py-4' 
+      }, [
         createElement('div', { class: 'flex flex-col space-y-4 justify-center items-center' }, [
           btnicon.message,
           btnicon.story,
@@ -41,7 +44,7 @@ export function ShowChat() {
           btnicon.settings,
         ])
       ]),
-      // Barre latérale des conversations
+      // Sidebar des conversations
       barre,
       // Zone de chat principale
       createElement('div', {

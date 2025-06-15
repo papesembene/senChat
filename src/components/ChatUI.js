@@ -4,6 +4,8 @@ import { getCurrentUser } from '../Services/auth.js';
 import { createMessageElement, sendMessage } from './Message.js';
 import { initial } from '../utils/helpers.js';
 import { startRecording, stopRecording, isRecording, formatSeconds } from './VoiceMessage.js';
+import { filterConversations } from '../utils/filters.js';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export let chatPollingInterval = null;
@@ -25,17 +27,82 @@ export async function showChatBase({ onSelect }) {
     fetch(`${API_URL}/users`).then(res => res.json())
   ]);
 
-  conversations.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity));
+  let searchValue = '';
+
+  const searchInput = createElement('input', {
+    class: 'w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none focus:border-green-500',
+    placeholder: 'Rechercher une conversation...',
+    oninput: (e) => {
+      searchValue = e.target.value;
+      renderList();
+    }
+  });
+
+  const conversationList = createElement('div', {
+    class: 'flex-1 overflow-y-auto bg-gray-100',
+  });
+
+  function renderList() {
+    conversationList.innerHTML = '';
+    const filtered = conversations.filter(conversation => {
+      if (!conversation.participants.includes(currentId)) return false;
+      const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
+      const otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
+      const displayName = conversation.type === 'prive'
+        ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
+        : (conversation.name || 'Conversation de groupe');
+      return !searchValue || displayName.toLowerCase().includes(searchValue.toLowerCase());
+    });
+
+    for (const conversation of filtered) {
+      const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
+      const otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
+      const displayName = conversation.type === 'prive'
+        ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
+        : (conversation.name || 'Conversation de groupe');
+      const initials = initial(displayName);
+
+      const formatTime = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      };
+
+      const convoItem = createElement('div', {
+        class: 'flex items-center p-3 hover:bg-gray-50 cursor-pointer hover:bg-green-200 border-b border-gray-100',
+        onClick: () => onSelect(conversation, otherParticipant)
+      }, [
+        createElement('div', {
+          class: 'w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3'
+        }, [
+          createElement('span', {
+            class: 'text-white font-medium'
+          }, initials)
+        ]),
+        createElement('div', { class: 'flex-1 min-w-0' }, [
+          createElement('div', { class: 'flex items-center justify-between mb-1' }, [
+            createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, displayName),
+            createElement('span', { class: 'text-xs text-gray-500' }, conversation.lastActivity ? formatTime(conversation.lastActivity) : '')
+          ]),
+          createElement('p', { class: 'text-sm text-gray-600 truncate' }, 
+            conversation.lastMessageType === 'audio'
+              ? '🎤 Message vocal'
+              : (conversation.lastMessage || 'Aucun message')
+          )
+        ])
+      ]);
+      conversationList.appendChild(convoItem);
+    }
+  }
+
+  renderList();
+
   const chatHeader = createElement('div', { class: 'p-4 bg-gray-50 border-b border-gray-200' }, [
     createElement('div', { class: 'flex items-center justify-between mb-3' }, [
       createElement('h2', { class: 'text-lg font-medium text-gray-900' }, 'SenChat 🇸🇳'),
       createElement('div', { class: 'flex' }, [btnicon.add, btnicon.dots2])
     ]),
     createElement('div', { class: 'relative' }, [
-      createElement('input', {
-        class: 'w-full border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-green-500 outline-none focus:border-green-500',
-        placeholder: 'Rechercher une conversation...',
-      }),
+      searchInput
     ]),
     createElement('div', { class: 'flex items-center justify-center mb-3 text-sm mt-4' }, [
       createButton({ class: 'p-2 w-[25%] hover:bg-gray-50 h-[50%] border border-solid border-green-500 rounded-full  mr-1' }, 'Toutes'),
@@ -44,79 +111,6 @@ export async function showChatBase({ onSelect }) {
       createButton({ class: 'p-2 hover:bg-gray-50 w-[25%] rounded-full border border-solid border-green-500 transition-colors ml-1' }, 'Groupes'),
     ])
   ]);
-
-  const conversationList = createElement('div', {
-    class: 'flex-1 overflow-y-auto bg-gray-100',
-    
-  });
-
-  for (const conversation of conversations) {
-    if (!conversation.participants.includes(currentId)) continue;
-    const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
-
-    let otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
-
-    if (!otherParticipant) {
-      const contacts = await fetch(`${API_URL}/contacts`).then(res => res.json());
-      otherParticipant = contacts.find(c =>
-        String(c.id) === String(otherParticipantId) ||
-        String(c.userId) === String(otherParticipantId) ||
-        String(c.contactId) === String(otherParticipantId) ||
-        (c.telephone && String(c.telephone) === String(otherParticipantId))
-      );
-      if (!otherParticipant && conversation.type === 'prive') {
-        const currentUser = getCurrentUser();
-        otherParticipant = contacts.find(c =>
-          (String(c.id) === String(otherParticipantId) ||
-           String(c.userId) === String(otherParticipantId) ||
-           String(c.contactId) === String(otherParticipantId)) &&
-          String(c.ownerId) === String(currentUser.id)
-        );
-      }
-    }
-
-    
-    if (!otherParticipant && window.selectedConversation && window.selectedConversation.id === conversation.id && window.selectedUser) {
-      otherParticipant = window.selectedUser;
-    }
-
-    const displayName = conversation.type === 'prive'
-      ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
-      : (conversation.name || 'Conversation de groupe');
-    const initials = initial(displayName);
-
-    const formatTime = (timestamp) => {
-      const date = new Date(timestamp);
-      return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    };
-
-    const convoItem = createElement('div', {
-      class: 'flex items-center p-3 hover:bg-gray-50 cursor-pointer hover:bg-green-200 border-b border-gray-100',
-      onClick: () => onSelect(conversation, otherParticipant)
-    }, [
-      createElement('div', {
-        class: 'w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3'
-      }, [
-        createElement('span', {
-          class: 'text-white font-medium'
-        }, initials)
-      ]),
-      createElement('div', { class: 'flex-1 min-w-0' }, [
-        createElement('div', { class: 'flex items-center justify-between mb-1' }, [
-          createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, displayName),
-          createElement('span', { class: 'text-xs text-gray-500' }, conversation.lastActivity ? formatTime(conversation.lastActivity) : '')
-        ]),
-        createElement('p', { class: 'text-sm text-gray-600 truncate' }, 
-        conversation.lastMessageType === 'audio'
-          ? '🎤 Message vocal'
-          : (conversation.lastMessage || 'Aucun message')
-      )
-        // createElement('p', { class: 'text-sm text-gray-600 truncate' }, conversation.lastMessage || 'Aucun message')
-      ])
-      
-    ]);
-    conversationList.appendChild(convoItem);
-  }
 
   return [
     chatHeader,
