@@ -157,12 +157,12 @@ export async function showChatBase({ onSelect }) {
  */
 export async function renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage) {
    let inputValue = inputMessage || '';
- const chatArea = document.getElementById('chat-area');
-  if (chatArea) {
-    chatArea.innerHTML = '';
-    chatArea.appendChild(createLoaderMessage("Connexion lente... Chargement des messages"));
-  }
-  await new Promise(res => setTimeout(res, 1500));
+//  const chatArea = document.getElementById('chat-area');
+//   if (chatArea) {
+//     chatArea.innerHTML = '';
+//     chatArea.appendChild(createLoaderMessage("Connexion lente... Chargement des messages"));
+//   }
+//   await new Promise(res => setTimeout(res, 1500));
   const response = await fetch(`${API_URL}/messages`);
   const allMessages = await response.json();
 

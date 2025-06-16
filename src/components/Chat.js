@@ -73,14 +73,18 @@ async function renderChatArea() {
   const chatArea = document.getElementById('chat-area');
   if (chatArea) {
     chatArea.innerHTML = '';
+    // Affiche le loader pendant le chargement
+    chatArea.appendChild(createLoaderMessage("Connexion lente... Chargement des messages"));
     if (window.selectedConversation) {
       const newContent = await renderSelectedChat(window.selectedConversation, window.selectedUser, '', setInputMessage);
+      chatArea.innerHTML = ''; // <-- Vide le loader
       if (Array.isArray(newContent)) {
         newContent.forEach(el => chatArea.appendChild(el));
       } else {
         chatArea.appendChild(newContent);
       }
     } else {
+      chatArea.innerHTML = '';
       chatArea.appendChild(renderDefaultChat());
     }
   }

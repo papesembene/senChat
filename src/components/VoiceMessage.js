@@ -56,7 +56,8 @@ export async function stopRecording()
     }
 }
 
-export async function sendVoiceMessage(audioBlob, selectedConversation) {
+export async function sendVoiceMessage(audioBlob, selectedConversation) 
+{
   const reader = new FileReader();
   reader.onloadend = async () => {
     const base64Audio = reader.result; 
