@@ -1,6 +1,7 @@
 import { createElement } from './Function.js';
 import { codeColors } from '../utils/colors.js';
 import { btnicon } from '../utils/constants.js';
+
 import { showChatBase, renderSelectedChat, renderDefaultChat, startChatPolling } from './ChatUI.js';
 /**
  * 
@@ -58,6 +59,17 @@ export function ShowChat() {
           : renderDefaultChat()
       ])
     ])
+  ]);
+}
+
+function createLoaderMessage(text = "Chargement des messages...") {
+  return createElement('div', {
+    class: 'flex flex-col items-center justify-center h-full py-10'
+  }, [
+    createElement('div', {
+      class: 'animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500 mb-4'
+    }),
+    createElement('div', { class: 'text-gray-500 text-sm' }, text)
   ]);
 }
 

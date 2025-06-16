@@ -387,14 +387,4 @@ async function refreshMessages(selectedConversation) {
   }
 }
 
-function createLoaderMessage(text = "Chargement des messages...") {
-  return createElement('div', {
-    class: 'flex flex-col items-center justify-center h-full py-10'
-  }, [
-    createElement('div', {
-      class: 'animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500 mb-4'
-    }),
-    createElement('div', { class: 'text-gray-500 text-sm' }, text)
-  ]);
-}
 
