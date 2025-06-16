@@ -45,7 +45,36 @@ export async function showStories() {
     }
     stories = stories.filter(story => story.items.length > 0);
   } catch (error) {
-    return createElement('div', { class: 'p-4 text-red-500' }, 'Erreur lors du chargement des statuts');
+    // Affiche une interface par défaut même si l'API échoue
+    const currentUser = getCurrentUser();
+    return createElement('div', { class: 'bg-gray-100 text-black h-full w-full p-0' }, [
+      createElement('div', { class: 'p-4 pb-2 flex items-center justify-between' }, [
+        createElement('h2', { class: 'text-xl font-bold' }, 'Statut'),
+        createElement('button', {
+          class: 'text-2xl font-bold relative',
+          onclick: (e) => {
+            e.stopPropagation();
+            showStatusTypeMenu(e.target, handleStatusTypeChoice);
+          }
+        }, '+')
+      ]),
+      // Mon statut (vide)
+      createElement('div', {
+        class: 'flex items-center px-4 py-2 hover:bg-green-100 cursor-pointer'
+      }, [
+        createElement('img', {
+          src: currentUser.avatar || 'https://via.placeholder.com/50',
+          class: 'w-12 h-12 rounded-full border-2 border-gray-300 mr-4',
+          alt: currentUser.name || 'Vous'
+        }),
+        createElement('div', {}, [
+          createElement('div', { class: 'font-semibold' }, currentUser.name || 'Votre statut'),
+          createElement('div', { class: 'text-xs text-gray-400' }, 'Aucun statut')
+        ])
+      ]),
+      createElement('div', { class: 'px-4 py-2 text-green-400 text-xs font-bold uppercase' }, 'Récents'),
+      createElement('div', { class: 'px-4 py-2 text-gray-400' }, 'Aucun statut récent')
+    ]);
   }
 
   const myStatus = stories.find(s => String(s.userId) === String(currentUser.id));
