@@ -50,8 +50,8 @@ export async function DisplayContact() {
         createElement('div', {
           class: 'flex gap-4 border-b cursor-pointer hover:bg-green-200 py-3 hover:scale-105 transition duration-300 ease-in-out',
           onclick: () => {
-            
-            const barre = document.querySelector('.w-\\[35\\%\\]');
+            const barre = document.getElementById('sidebar-content');
+            // const barre = document.querySelector('.w-\\[35\\%\\]');
             if (barre) {
               barre.innerHTML = '';
               const addContactForm = createAddContactForm();

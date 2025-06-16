@@ -95,6 +95,7 @@ const btnicon = {
     `
     return button;
   })(),
+  
 add: (() => {
   const button = createElement('button', {
     class: 'p-2 rounded-full',
@@ -102,7 +103,7 @@ add: (() => {
     id: 'add',
     'title': 'Nouvelle Discussion',
     onclick: () => {
-      const barre = document.getElementById('sidebar-content'); // <-- Correction ici
+      const barre = document.getElementById('sidebar-content'); 
       if (barre) {
         barre.innerHTML = '';
         DisplayContact().then(contactElement => {

@@ -2,6 +2,7 @@ import { createElement } from "./Function.js";
 import { DisplayContact } from "./Contacts.js";
 import { getCurrentUser } from "../Services/auth";
 import { btnicon } from "../utils/constants.js";
+import { showTosast } from "../utils/helpers.js";
 const API_URL = import.meta.env.VITE_API_URL;
 
 /**
@@ -33,8 +34,13 @@ export function createAddContactForm() {
           const telephone = formData.get('telephone').trim();
           const codecountry = formData.get('codecountry').trim();
     
-          if (!name || !telephone) {
-            alert('Veuillez remplir tous les champs obligatoires');
+          if (!name ) {
+          showTosast('Le nom est obligatoire', 'error');
+            return;
+          }
+          if (!isValidSenegalPhoneNumber(telephone)) {
+            showTosast('Le numéro de téléphone n\'est pas valide', 'error');
+            // alert('Le numéro doit comporter 9 chiffres, commencer par 77, 78, 76, 75 ou 70, et ne contenir que des chiffres.');
             return;
           }
 
@@ -95,7 +101,6 @@ export function createAddContactForm() {
             type: 'text',
             id: 'name',
             name: 'name',
-            required: true,
             class: 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none',
             placeholder: 'Ex: Pape Sembene'
           })
@@ -124,7 +129,7 @@ export function createAddContactForm() {
             type: 'text',
             id: 'codecountry',
             name: 'codecountry',
-            class: 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none',
+            class: 'w-full  px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none',
             placeholder: 'Ex: +221',
             value: '+221'
           })
@@ -151,7 +156,7 @@ export function createAddContactForm() {
             type: 'tel',
             id: 'telephone',
             name: 'telephone',
-            required: true,
+            
             class: 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none',
             placeholder: 'Ex: 771234567'
           })
@@ -162,13 +167,17 @@ export function createAddContactForm() {
           createElement('button', {
             type: 'button',
             class: 'flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors',
-            onclick: () => {
-              const barre = document.querySelector('.w-\\[35\\%\\]');
+            onclick: async() => {
+              // const barre = document.querySelector('.w-\\[35\\%\\]');
+              const barre = document.getElementById('sidebar-content');
               if (barre) {
                 barre.innerHTML = '';
-                DisplayContact().then(contactElement => {
-                  barre.appendChild(contactElement);
-                });
+                // DisplayContact().then(contactElement => {
+                //   barre.appendChild(contactElement);
+                // });
+                 const contactList = await DisplayContact();
+                barre.appendChild(contactList);
+               
               }
             }
           }, 'Annuler'),
@@ -180,4 +189,9 @@ export function createAddContactForm() {
       ])
     ])
   ]);
+}
+
+function isValidSenegalPhoneNumber(number) {
+  // Doit être 9 chiffres, commencer par 77, 78, 76, 75 ou 70, et que des chiffres
+  return /^(77|78|76|75|70)\d{7}$/.test(number);
 }

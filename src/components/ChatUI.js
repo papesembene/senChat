@@ -68,7 +68,7 @@ export async function showChatBase({ onSelect }) {
       };
 
       const convoItem = createElement('div', {
-        class: 'flex items-center p-3 hover:bg-gray-50 cursor-pointer hover:bg-green-200 border-b border-gray-100',
+        class: 'flex items-center p-3 hover:bg-gray-50 cursor-pointer hover:bg-green-200 border-b border-gray-100 relative group',
         onClick: () => onSelect(conversation, otherParticipant)
       }, [
         createElement('div', {
@@ -88,7 +88,28 @@ export async function showChatBase({ onSelect }) {
               ? '🎤 Message vocal'
               : (conversation.lastMessage || 'Aucun message')
           )
-        ])
+        ]),
+          createElement('button', {
+  class: 'absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-white transition-opacity rounded-full p-1 shadow text-black',
+  style: 'z-index:10;',
+  onclick: (e) => {
+    e.stopPropagation();
+    showConversationMenu(conversation, convoItem);
+  }
+}, [
+  createElement('svg', {
+    xmlns: 'http://www.w3.org/2000/svg',
+    width: 20,
+    height: 20,
+    fill: 'currentColor',
+    viewBox: '0 0 16 16',
+    class: 'bi bi-chevron-down'
+  }, [
+    createElement('path', {
+      d: 'M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'
+    })
+  ])
+])
       ]);
       conversationList.appendChild(convoItem);
     }
@@ -136,7 +157,12 @@ export async function showChatBase({ onSelect }) {
  */
 export async function renderSelectedChat(selectedConversation, selectedUser, inputMessage, setInputMessage) {
    let inputValue = inputMessage || '';
- 
+ const chatArea = document.getElementById('chat-area');
+  if (chatArea) {
+    chatArea.innerHTML = '';
+    chatArea.appendChild(createLoaderMessage("Connexion lente... Chargement des messages"));
+  }
+  await new Promise(res => setTimeout(res, 1500));
   const response = await fetch(`${API_URL}/messages`);
   const allMessages = await response.json();
 
@@ -359,5 +385,16 @@ async function refreshMessages(selectedConversation) {
     }
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
+}
+
+function createLoaderMessage(text = "Chargement des messages...") {
+  return createElement('div', {
+    class: 'flex flex-col items-center justify-center h-full py-10'
+  }, [
+    createElement('div', {
+      class: 'animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500 mb-4'
+    }),
+    createElement('div', { class: 'text-gray-500 text-sm' }, text)
+  ]);
 }
 
