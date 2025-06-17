@@ -3,7 +3,9 @@ import { navigateTo } from '../components/router.js';
 import { DisplayContact } from '../components/Contacts.js';
 import { showChatBase } from '../components/ChatUI.js';
 import { showStories } from '../components/Stories.js'; 
+import { showSettingsSidebar } from '../components/Settings.js';
 const btnicon = {
+
   message: (() => {
   const button = createElement('button', {
     class: ' text-white p-2 rounded-full shadow-lg ',
@@ -44,6 +46,7 @@ const btnicon = {
     id: 'btnstory',
     title: 'Status',
     onclick: async() => {
+       if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval);
       const sidebar = document.getElementById('sidebar-content');
       if (sidebar) {
         sidebar.innerHTML = '';
@@ -82,6 +85,7 @@ const btnicon = {
       type: 'button',
       id: 'btngroupe',
       'title': 'Groupes',
+        
     });
     button.innerHTML=`
     <svg width="23px" height="23px" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -95,40 +99,41 @@ const btnicon = {
     `
     return button;
   })(),
-  
-add: (() => {
-  const button = createElement('button', {
-    class: 'p-2 rounded-full',
-    type: 'button',
-    id: 'add',
-    'title': 'Nouvelle Discussion',
-    onclick: () => {
-      const barre = document.getElementById('sidebar-content'); 
-      if (barre) {
-        barre.innerHTML = '';
-        DisplayContact().then(contactElement => {
-          barre.appendChild(contactElement);
-        }).catch(error => {
-          console.error('Erreur lors du chargement des contacts:', error);
-          const errorElement = createElement('div', {
-            class: 'p-4 text-center text-red-500'
-          }, 'Erreur lors du chargement des contacts');
-          barre.appendChild(errorElement);
-        });
+  add: (() => {
+    const button = createElement('button', {
+      class: 'p-2 rounded-full',
+      type: 'button',
+      id: 'add',
+      'title': 'Nouvelle Discussion',
+      onclick: (e) => {
+        e.preventDefault()
+         if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval); 
+        const barre = document.getElementById('sidebar-content'); 
+        if (barre) {
+          barre.innerHTML = '';
+          DisplayContact().then(contactElement => {
+            barre.appendChild(contactElement);
+          }).catch(error => {
+            console.error('Erreur lors du chargement des contacts:', error);
+            const errorElement = createElement('div', {
+              class: 'p-4 text-center text-red-500'
+            }, 'Erreur lors du chargement des contacts');
+            barre.appendChild(errorElement);
+          });
+        }
       }
-    }
-  });
-  
-  button.innerHTML = `
-    <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none">
-      <title>new-chat-outline</title>
-      <path d="M9.53277 12.9911H11.5086V14.9671C11.5086 15.3999 11.7634 15.8175 12.1762 15.9488C12.8608 16.1661 13.4909 15.6613 13.4909 15.009V12.9911H15.4672C15.9005 12.9911 16.3181 12.7358 16.449 12.3226C16.6659 11.6381 16.1606 11.0089 15.5086 11.0089H13.4909V9.03332C13.4909 8.60007 13.2361 8.18252 12.8233 8.05119C12.1391 7.83391 11.5086 8.33872 11.5086 8.991V11.0089H9.49088C8.83941 11.0089 8.33411 11.6381 8.55097 12.3226C8.68144 12.7358 9.09947 12.9911 9.53277 12.9911Z" fill="currentColor"></path>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M0.944298 5.52617L2.99998 8.84848V17.3333C2.99998 18.8061 4.19389 20 5.66665 20H19.3333C20.8061 20 22 18.8061 22 17.3333V6.66667C22 5.19391 20.8061 4 19.3333 4H1.79468C1.01126 4 0.532088 4.85997 0.944298 5.52617ZM4.99998 8.27977V17.3333C4.99998 17.7015 5.29845 18 5.66665 18H19.3333C19.7015 18 20 17.7015 20 17.3333V6.66667C20 6.29848 19.7015 6 19.3333 6H3.58937L4.99998 8.27977Z" fill="currentColor"></path>
-    </svg>
-  `;
-  
-  return button;
-})(),
+    });
+    
+    button.innerHTML = `
+      <svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none">
+        <title></title>
+        <path d="M9.53277 12.9911H11.5086V14.9671C11.5086 15.3999 11.7634 15.8175 12.1762 15.9488C12.8608 16.1661 13.4909 15.6613 13.4909 15.009V12.9911H15.4672C15.9005 12.9911 16.3181 12.7358 16.449 12.3226C16.6659 11.6381 16.1606 11.0089 15.5086 11.0089H13.4909V9.03332C13.4909 8.60007 13.2361 8.18252 12.8233 8.05119C12.1391 7.83391 11.5086 8.33872 11.5086 8.991V11.0089H9.49088C8.83941 11.0089 8.33411 11.6381 8.55097 12.3226C8.68144 12.7358 9.09947 12.9911 9.53277 12.9911Z" fill="currentColor"></path>
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.944298 5.52617L2.99998 8.84848V17.3333C2.99998 18.8061 4.19389 20 5.66665 20H19.3333C20.8061 20 22 18.8061 22 17.3333V6.66667C22 5.19391 20.8061 4 19.3333 4H1.79468C1.01126 4 0.532088 4.85997 0.944298 5.52617ZM4.99998 8.27977V17.3333C4.99998 17.7015 5.29845 18 5.66665 18H19.3333C19.7015 18 20 17.7015 20 17.3333V6.66667C20 6.29848 19.7015 6 19.3333 6H3.58937L4.99998 8.27977Z" fill="currentColor"></path>
+      </svg>
+    `;
+    
+    return button;
+  })(),
   settings:(()=>{
     const button = createElement('button', {
       class: 'text-white p-2 rounded-full shadow-lg ',
@@ -138,6 +143,9 @@ add: (() => {
       type: 'button',
       id: 'btnsettings',
       'title': 'Paramètres',
+       onclick: () => {
+      showSettingsSidebar();
+    }
     });
     button.innerHTML=`
     <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0-6 0"/></g></svg>
@@ -230,6 +238,7 @@ add: (() => {
           } else if (elements && elements.nodeType === Node.ELEMENT_NODE) {
             barre.appendChild(elements);
           }
+          if (window.startConversationPolling) window.startConversationPolling();
         }).catch(error => {
           const errorElement = createElement('div', {
             class: 'p-4 text-center text-red-500'
@@ -429,7 +438,5 @@ add: (() => {
       return container;
     
   })()
-
-
 };
 export { btnicon };

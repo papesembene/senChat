@@ -145,9 +145,13 @@ export async function sendMessage(inputMessage, selectedConversation) {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
 
+  const isGroup = !selectedConversation.type || selectedConversation.type === 'groupe';
+
   const newMessage = {
     id: generateMessageId(),
-    conversationId: selectedConversation.id,
+    ...(isGroup
+      ? { groupId: selectedConversation.id }
+      : { conversationId: selectedConversation.id }),
     senderId: Number(currentUser.id),
     type: 'text',
     content: inputMessage.trim(),

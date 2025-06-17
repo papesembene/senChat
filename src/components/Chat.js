@@ -25,6 +25,7 @@ export function ShowChat() {
     }
   }).then(elements => {
     elements.forEach(el => barre.appendChild(el));
+     if (window.startConversationPolling) window.startConversationPolling();
   });
 
   return createElement('div', {
@@ -89,7 +90,7 @@ async function renderChatArea() {
     chatArea.appendChild(createLoaderMessage("Connexion lente... Chargement des messages"));
     if (window.selectedConversation) {
       const newContent = await renderSelectedChat(window.selectedConversation, window.selectedUser, '', setInputMessage);
-      chatArea.innerHTML = ''; // <-- Vide le loader
+      chatArea.innerHTML = ''; 
       if (Array.isArray(newContent)) {
         newContent.forEach(el => chatArea.appendChild(el));
       } else {
@@ -101,5 +102,35 @@ async function renderChatArea() {
     }
   }
 }
+
+// let conversationPollingInterval = null;
+/**
+ * Fonction pour démarrer le polling des conversations.
+ * Elle vérifie si la barre latérale existe, puis appelle showChatBase pour mettre à jour les conversations.
+ * Elle utilise un intervalle pour mettre à jour les conversations toutes les 3 secondes.
+ * @param {Function} showChatBase - La fonction pour afficher la base de chat.
+ * @return {void}
+ * @description Démarre le polling des conversations pour mettre à jour la liste des conversations dans la barre latérale.
+ */
+function startConversationPolling() {
+  // Utilise la variable globale
+  if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval);
+  window.conversationPollingInterval = setInterval(async () => {
+    const barre = document.getElementById('sidebar-content');
+    if (barre) {
+      const { showChatBase } = await import('./ChatUI.js');
+      const elements = await showChatBase({
+        onSelect: (conversation, user) => {
+          window.selectedConversation = conversation;
+          window.selectedUser = user;
+          if (window.renderChatArea) window.renderChatArea();
+        }
+      });
+      barre.innerHTML = '';
+      elements.forEach(el => barre.appendChild(el));
+    }
+  }, 3000); // toutes les 3 secondes
+}
+window.startConversationPolling = startConversationPolling;
 
 window.renderChatArea = renderChatArea;

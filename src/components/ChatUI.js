@@ -22,10 +22,24 @@ export async function showChatBase({ onSelect }) {
   const currentUser = getCurrentUser();
   const currentId = Number(currentUser.id);
 
-  const [conversations, users] = await Promise.all([
+  // Charge conversations ET groupes
+  const [conversations, groupes, users, allMessages] = await Promise.all([
     fetch(`${API_URL}/conversations`).then(res => res.json()),
-    fetch(`${API_URL}/users`).then(res => res.json())
+    fetch(`${API_URL}/groupes`).then(res => res.json()),
+    fetch(`${API_URL}/users`).then(res => res.json()),
+    fetch(`${API_URL}/messages`).then(res => res.json())
   ]);
+
+  // Pour chaque groupe, trouve le dernier message (par date)
+  const groupLastMessages = {};
+  groupes.forEach(group => {
+    const groupMsgs = allMessages
+      .filter(msg => String(msg.groupId) === String(group.id))
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    if (groupMsgs.length) {
+      groupLastMessages[group.id] = groupMsgs[0];
+    }
+  });
 
   let searchValue = '';
 
@@ -44,7 +58,9 @@ export async function showChatBase({ onSelect }) {
 
   function renderList() {
     conversationList.innerHTML = '';
-    const filtered = conversations.filter(conversation => {
+
+    // Filtre conversations privées
+    const filteredConvos = conversations.filter(conversation => {
       if (!conversation.participants.includes(currentId)) return false;
       const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
       const otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
@@ -54,64 +70,115 @@ export async function showChatBase({ onSelect }) {
       return !searchValue || displayName.toLowerCase().includes(searchValue.toLowerCase());
     });
 
-    for (const conversation of filtered) {
-      const otherParticipantId = conversation.participants.find(id => Number(id) !== currentId);
-      const otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
-      const displayName = conversation.type === 'prive'
-        ? (otherParticipant ? otherParticipant.name : 'Utilisateur inconnu')
-        : (conversation.name || 'Conversation de groupe');
-      const initials = initial(displayName);
+    // Filtre groupes où je suis membre
+    const filteredGroups = groupes.filter(group =>
+      group.participants &&
+      group.participants.some(pid => String(pid) === String(currentId)) && 
+      (!searchValue || (group.name && group.name.toLowerCase().includes(searchValue.toLowerCase())))
+    );
 
-      const formatTime = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-      };
+    // Trie par date (optionnel)
+    const allItems = [
+      ...filteredGroups.map(g => ({ ...g, isGroup: true, type: 'groupe' })), 
+      ...filteredConvos.map(c => ({ ...c, isGroup: false, type: 'prive' }))  
+    ].sort((a, b) => new Date(b.lastActivity || b.createdAt) - new Date(a.lastActivity || a.createdAt));
 
-      const convoItem = createElement('div', {
-        class: 'flex items-center p-3 hover:bg-gray-50 cursor-pointer hover:bg-green-200 border-b border-gray-100 relative group',
-        onClick: () => onSelect(conversation, otherParticipant)
-      }, [
-        createElement('div', {
-          class: 'w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3'
+    for (const item of allItems) {
+      if (item.isGroup) {
+        // Affichage d'un groupe
+        const groupItem = createElement('div', {
+          class: 'flex items-center p-3 hover:bg-green-100 rounded-lg cursor-pointer transition-colors duration-200 mb-1',
+          onclick: () => onSelect(item, null)
         }, [
-          createElement('span', {
-            class: 'text-white font-medium'
-          }, initials)
-        ]),
-        createElement('div', { class: 'flex-1 min-w-0' }, [
-          createElement('div', { class: 'flex items-center justify-between mb-1' }, [
-            createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, displayName),
-            createElement('span', { class: 'text-xs text-gray-500' }, conversation.lastActivity ? formatTime(conversation.lastActivity) : '')
-          ]),
-          createElement('p', { class: 'text-sm text-gray-600 truncate' }, 
-            conversation.lastMessageType === 'audio'
-              ? '🎤 Message vocal'
-              : (conversation.lastMessage || 'Aucun message')
-          )
-        ]),
-          createElement('button', {
-  class: 'absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-white transition-opacity rounded-full p-1 shadow text-black',
-  style: 'z-index:10;',
-  onclick: (e) => {
-    e.stopPropagation();
-    showConversationMenu(conversation, convoItem);
-  }
-}, [
-  createElement('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    width: 20,
-    height: 20,
-    fill: 'currentColor',
-    viewBox: '0 0 16 16',
-    class: 'bi bi-chevron-down'
+          item.photo
+            ? createElement('img', {
+                src: item.photo,
+                class: 'w-12 h-12 rounded-full object-cover mr-3 border border-green-400'
+              })
+            : createElement('div', {
+                class: 'w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-3'
+              }, [
+                (() => {
+                  const div = document.createElement('div');
+                  div.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm4-3a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM2 13s-1 0-1-1 1-4 7-4 7 3 7 4-1 1-1 1H2zm13-1c0-1-2.686-3-7-3s-7 2-7 3 2.686 3 7 3 7-2 7-3z"/>
+                    </svg>
+                  `;
+                  return div.firstChild;
+                })()
+              ]),
+          createElement('div', { class: 'flex-1 min-w-0' }, [
+            createElement('div', { class: 'flex items-center justify-between mb-1' }, [
+              createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, item.name),
+              createElement('span', { class: 'text-xs text-gray-500' }, item.createdAt ? new Date(item.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '')
+            ]),
+            createElement('p', { class: 'text-xs text-gray-500' }, 'Groupe')
+          ])
+        ]);
+        conversationList.appendChild(groupItem);
+      } else {
+        const otherParticipantId = item.participants.find(id => Number(id) !== currentId);
+  const otherParticipant = users.find(user => String(user.id) === String(otherParticipantId));
+  const displayName = otherParticipant ? otherParticipant.name : 'Utilisateur inconnu';
+  const convoItem = createElement('div', {
+    class: 'flex items-center p-3 hover:bg-green-50 rounded-lg cursor-pointer transition-colors duration-200 mb-1',
+    onclick: () => onSelect(item, otherParticipant)
   }, [
-    createElement('path', {
-      d: 'M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'
-    })
-  ])
-])
-      ]);
-      conversationList.appendChild(convoItem);
+    createElement('div', {
+      class: 'w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3 text-white font-bold'
+    }, [
+      createElement('span', {}, displayName.charAt(0).toUpperCase())
+    ]),
+    createElement('div', { class: 'flex-1 min-w-0' }, [
+      createElement('div', { class: 'flex items-center justify-between mb-1' }, [
+        createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, displayName),
+        createElement('span', { class: 'text-xs text-gray-500' }, item.lastActivity ? new Date(item.lastActivity).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '')
+      ]),
+      createElement('p', { class: 'text-xs text-gray-500 truncate' }, 
+        (() => {
+          if (item.isGroup) {
+            const lastMsg = groupLastMessages[item.id];
+            if (lastMsg) {
+              // Trouver le nom de l'expéditeur
+              let senderName = 'Inconnu';
+              if (String(lastMsg.senderId) === String(currentId)) {
+                senderName = 'Vous';
+              } else {
+                const user = users.find(u => String(u.id) === String(lastMsg.senderId));
+                if (user && user.name) senderName = user.name;
+                // Si tu veux chercher dans contacts aussi, décommente ci-dessous :
+                // else {
+                //   const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+                //   const contact = contacts.find(c => String(c.id) === String(lastMsg.senderId));
+                //   if (contact && contact.name) senderName = contact.name;
+                // }
+              }
+              if (lastMsg.type === 'audio') {
+                return `${senderName} : 🎤 Message vocal`;
+              }
+              return `${senderName} : ${lastMsg.content}`;
+            }
+            return 'Aucun message';
+          } else {
+            // Conversation privée
+            const convoMsgs = allMessages
+              .filter(msg => String(msg.conversationId) === String(item.id))
+              .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            if (convoMsgs.length) {
+              const lastMsg = convoMsgs[0];
+              return lastMsg.type === 'audio'
+                ? '🎤 Message vocal'
+                : lastMsg.content;
+            }
+            return 'Aucun message';
+          }
+        })()
+      )
+    ])
+  ]);
+  conversationList.appendChild(convoItem);
+      }
     }
   }
 
@@ -168,7 +235,11 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
 
   const filteredMessages = Array.isArray(allMessages)
   ? allMessages
-    .filter(msg => String(msg.conversationId) === String(selectedConversation.id))
+    .filter(msg =>
+      selectedConversation.type === 'prive'
+        ? String(msg.conversationId) === String(selectedConversation.id)
+        : String(msg.groupId) === String(selectedConversation.id) // Pour les groupes
+    )
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
   : [];
 
@@ -176,27 +247,70 @@ export async function renderSelectedChat(selectedConversation, selectedUser, inp
     ? (selectedUser ? selectedUser.name : 'Utilisateur inconnu')
     : (selectedConversation.name || 'Conversation de groupe');
   const initials = initial(displayName);
+const isGroup = selectedConversation && selectedConversation.type === 'groupe';
+
+let membersLine = null;
+if (isGroup) {
+  // Récupère tous les utilisateurs
+  const responseUsers = await fetch(`${API_URL}/users`);
+  const contacts = await fetch(`${API_URL}/contacts`).then(res => res.json());
+  const users = await responseUsers.json();
+  const currentUser = getCurrentUser();
+
+  // Affiche "Vous" pour l'utilisateur courant, sinon le nom du membre
+  const uniqueIds = Array.from(new Set(selectedConversation.participants || []));
+  const memberNames = uniqueIds.map(id => {
+    if (String(id) === String(currentUser.id)) return "Vous";
+    // Cherche dans users
+    // const user = users.find(u => String(u.id) === String(id));
+    // if (user && user.name) return user.name;
+    // Sinon cherche dans contacts (pour les membres ajoutés qui ne sont pas dans users)
+    // Optionnel : à activer si besoin
+    const contact = contacts.find(c => String(c.id) === String(id));
+    if (contact && contact.name) return contact.name;
+    return "Inconnu";
+  });
+
+  let displayMembers = memberNames.join(', ');
+
+  membersLine = createElement('div', {
+    class: 'text-xs text-gray-400 truncate',
+    style: 'max-width: 90%;'
+  }, displayMembers);
+}
+
+// Header du chat
+const header = createElement('div', { class: 'p-4 bg-white border-b border-gray-200 flex items-center ' }, [
+  // Affiche la photo du groupe OU les initiales du contact
+  isGroup
+    ? createElement('img', {
+        src: selectedConversation.photo || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(selectedConversation.name),
+        class: 'w-10 h-10 rounded-full object-cover mr-3 border border-green-400'
+      })
+    : createElement('div', {
+        class: 'w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg mr-3',
+        style: 'user-select:none;'
+      }, [
+        createElement('span', {}, (selectedUser?.name || 'U').charAt(0).toUpperCase())
+      ]),
+  createElement('div', { class: 'flex-1 flex flex-col min-w-0' }, [
+    createElement('div', { class: 'font-medium text-gray-900 truncate' },
+      isGroup ? selectedConversation.name : (selectedUser?.name || '')
+    ),
+    isGroup ? membersLine : null
+  ]),
+  createElement('div', { class: 'text-sm text-gray-500 flex ml-2' }, [
+    btnicon.search,
+    btnicon.dots
+  ])
+]);
 
   const messageElements = filteredMessages.length
     ? filteredMessages.map(msg => createMessageElement(msg))
     : [createElement('div', { class: 'text-gray-400 text-center' }, "Aucun message. Commencez la discussion !")];
 
   return [
-    createElement('div', { class: 'p-4 bg-white border-b border-gray-200 flex items-center ' }, [
-      createElement('div', { class: 'w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3' }, [
-        createElement('span', { class: 'text-white font-medium text-sm' }, initials),
-      ]),
-      createElement('div', { class: 'flex-1 flex justify-between ' }, [
-        createElement('div', {}, [
-          createElement('h3', { class: 'font-medium text-gray-900' }, displayName),
-          createElement('p', { class: 'text-sm text-gray-500' }, 'En ligne'),
-        ]),
-        createElement('div', { class: 'text-sm text-gray-500 flex' }, [
-          btnicon.search,
-          btnicon.dots
-        ])
-      ])
-    ]),
+    header,
     createElement('div', { class: 'flex-1 overflow-y-auto p-4 space-y-4', id: 'messages-container' }, messageElements),
     createElement('div', { class: 'p-4 bg-white border-t border-gray-200' }, [
       createElement('div', { class: 'flex items-center space-x-3' }, [
@@ -362,7 +476,11 @@ async function refreshMessages(selectedConversation) {
 
   const filteredMessages = Array.isArray(allMessages)
   ? allMessages
-    .filter(msg => String(msg.conversationId) === String(selectedConversation.id))
+    .filter(msg =>
+      selectedConversation.type === 'prive'
+        ? String(msg.conversationId) === String(selectedConversation.id)
+        : String(msg.groupId) === String(selectedConversation.id) 
+    )
     .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
   : [];
 
@@ -386,5 +504,7 @@ async function refreshMessages(selectedConversation) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 }
+
+
 
 

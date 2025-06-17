@@ -177,6 +177,8 @@ export function createAddContactForm() {
                 // });
                  const contactList = await DisplayContact();
                 barre.appendChild(contactList);
+                if (window.startConversationPolling) window.startConversationPolling(); 
+  
                
               }
             }

@@ -35,11 +35,14 @@ export async function DisplayContact() {
       }, [
         createElement('div', {
           class: 'flex gap-4 border-b cursor-pointer hover:bg-green-200 py-3 hover:scale-105 transition duration-300 ease-in-out',
-          onclick: async() => {
-            const barre = document.querySelector('.w-\\[35\\%\\]')
+          onclick: async(e) => {
+             if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval); 
+            const barre = document.querySelector('#sidebar-content')
             if(barre){
                 barre.innerHTML = ''
                 const addGroupComposant = await AddGroupcomposant()
+                console.log(addGroupComposant);
+                
                 barre.append(addGroupComposant)
             }
           }
@@ -50,8 +53,8 @@ export async function DisplayContact() {
         createElement('div', {
           class: 'flex gap-4 border-b cursor-pointer hover:bg-green-200 py-3 hover:scale-105 transition duration-300 ease-in-out',
           onclick: () => {
+            if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval);
             const barre = document.getElementById('sidebar-content');
-            // const barre = document.querySelector('.w-\\[35\\%\\]');
             if (barre) {
               barre.innerHTML = '';
               const addContactForm = createAddContactForm();
