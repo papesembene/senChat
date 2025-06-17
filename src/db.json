@@ -61,8 +61,8 @@
       ],
       "type": "prive",
       "name": "",
-      "lastMessage": "nkm",
-      "lastActivity": "2025-06-17T19:48:10.771Z",
+      "lastMessage": "cv bn8",
+      "lastActivity": "2025-06-17T23:00:29.836Z",
       "avatar": "https://randomuser.me/api/portraits/women/2.jpg",
       "lastMessageType": "text"
     }
@@ -318,6 +318,24 @@
       "type": "text",
       "content": "hey",
       "timestamp": "2025-06-17T19:48:37.259Z",
+      "status": "envoye"
+    },
+    {
+      "id": "17502012148551ik52ho6u",
+      "groupId": "6fea",
+      "senderId": 1,
+      "type": "text",
+      "content": "nkm",
+      "timestamp": "2025-06-17T23:00:14.855Z",
+      "status": "envoye"
+    },
+    {
+      "id": "17502012298153exlvzgle",
+      "conversationId": "1",
+      "senderId": 1,
+      "type": "text",
+      "content": "cv bn8",
+      "timestamp": "2025-06-17T23:00:29.815Z",
       "status": "envoye"
     }
   ],

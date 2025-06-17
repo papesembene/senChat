@@ -111,9 +111,35 @@ export async function showChatBase({ onSelect }) {
           createElement('div', { class: 'flex-1 min-w-0' }, [
             createElement('div', { class: 'flex items-center justify-between mb-1' }, [
               createElement('h3', { class: 'text-sm font-medium text-gray-900 truncate' }, item.name),
-              createElement('span', { class: 'text-xs text-gray-500' }, item.createdAt ? new Date(item.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '')
+              createElement('span', { class: 'text-xs text-gray-500' }, (() => {
+                const lastMsg = groupLastMessages[item.id];
+                if (lastMsg && lastMsg.timestamp) {
+                  return new Date(lastMsg.timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                }
+                return '';
+              })())
             ]),
-            createElement('p', { class: 'text-xs text-gray-500' }, 'Groupe')
+            // createElement('p', { class: 'text-xs text-gray-500' }, 'Groupe')
+            createElement('p', { class: 'text-xs text-gray-500 truncate' }, 
+  (() => {
+    const lastMsg = groupLastMessages[item.id];
+    if (lastMsg) {
+      // Trouver le nom de l'expéditeur
+      let senderName = 'Inconnu';
+      if (String(lastMsg.senderId) === String(currentId)) {
+        senderName = 'Vous';
+      } else {
+        const user = users.find(u => String(u.id) === String(lastMsg.senderId));
+        if (user && user.name) senderName = user.name;
+      }
+      if (lastMsg.type === 'audio') {
+        return `${senderName} : 🎤 Message vocal`;
+      }
+      return `${senderName} : ${lastMsg.content}`;
+    }
+    return 'Aucun message';
+  })()
+)
           ])
         ]);
         conversationList.appendChild(groupItem);
