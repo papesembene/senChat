@@ -87,3 +87,37 @@ export function initial(name) {
     .slice(0, 2)
     .join('')
 }
+
+/**
+ * 
+ * @description Crée un élément de chargement avec un texte personnalisé.
+ * Utilisé pour indiquer que quelque
+ * chose est en cours de chargement, comme une requête API ou un traitement de données.
+ * @param {string} text - Le texte à afficher pendant le chargement, par défaut "Chargement...".
+ * @returns {HTMLElement} - Un élément div contenant un SVG de chargement et le texte
+ * 
+ */
+export function createLoader(text = "Chargement...") {
+  return createElement('div', {
+    class: 'flex items-center justify-center h-32 text-gray-500'
+  }, [
+    createElement('svg', {
+      class: 'animate-spin h-6 w-6 mr-2 text-green-500',
+      xmlns: 'http://www.w3.org/2000/svg',
+      fill: 'none',
+      viewBox: '0 0 24 24'
+    }, [
+      createElement('circle', {
+        class: 'opacity-25',
+        cx: '12', cy: '12', r: '10',
+        stroke: 'currentColor', 'stroke-width': '4'
+      }),
+      createElement('path', {
+        class: 'opacity-75',
+        fill: 'currentColor',
+        d: 'M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+      })
+    ]),
+    createElement('span', {}, text)
+  ]);
+}

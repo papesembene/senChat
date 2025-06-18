@@ -1,5 +1,5 @@
 import { createElement, createButton } from './Function.js';
-import { btnicon } from '../utils/constants.js'
+import { btnicon,setActiveSidebarButton } from '../utils/constants.js'
 import { getCurrentUser } from '../Services/auth.js';
 import { createMessageElement, sendMessage } from './Message.js';
 import { initial } from '../utils/helpers.js';
@@ -55,7 +55,7 @@ export async function showChatBase({ onSelect }) {
   const conversationList = createElement('div', {
     class: 'flex-1 overflow-y-auto bg-gray-100',
   });
-
+  conversationList.appendChild(createSidebarLoader());
   function renderList() {
     conversationList.innerHTML = '';
 
@@ -529,6 +529,26 @@ async function refreshMessages(selectedConversation) {
     }
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
+}
+
+/**
+ * Crée un élément de chargement pour la barre latérale.
+ * @param {string} [text="Chargement des conversations..."] - Le texte à afficher sous l'icône de chargement.
+ * @returns {HTMLElement} Un élément div HTML représentant l'animation de chargement.
+ * @description
+ * Cette fonction crée un élément de chargement qui peut être affiché dans la barre latérale
+ * pendant que les conversations sont en cours de chargement. Il affiche une animation de rotation
+ * suivie d'un texte descriptif.
+ */
+export function createSidebarLoader(text = "Chargement des conversations...") {
+  return createElement('div', {
+    class: 'flex flex-col items-center justify-center h-full py-10'
+  }, [
+    createElement('div', {
+      class: 'animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500 mb-3'
+    }),
+    createElement('div', { class: 'text-gray-500 text-sm' }, text)
+  ]);
 }
 
 

@@ -14,6 +14,7 @@ const btnicon = {
     title: 'Message',
     onclick: async (e) => {
       e.preventDefault();
+      setActiveSidebarButton('btnmessage');
       const sidebar = document.getElementById('sidebar-content');
       if (sidebar) {
         sidebar.innerHTML = '';
@@ -46,6 +47,7 @@ const btnicon = {
     id: 'btnstory',
     title: 'Status',
     onclick: async() => {
+      setActiveSidebarButton('btnstory');
        if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval);
       const sidebar = document.getElementById('sidebar-content');
       if (sidebar) {
@@ -71,6 +73,9 @@ const btnicon = {
       type: 'button',
       id: 'btnchannel',
         'title': 'Chaines',
+        onclick:()=>{
+          alert('Cette fonctionnalité n\'est pas encore implémentée');
+        }
     });
     button.innerHTML=`
        <svg fill="white" width="23px" height="23px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -80,11 +85,15 @@ const btnicon = {
     return button;
   })(),
   groupe:(()=>{
+
     const button = createElement('button', {
       class: 'text-white  p-2 rounded-full shadow-lg ',
       type: 'button',
       id: 'btngroupe',
       'title': 'Groupes',
+      onclick:()=>{
+        alert('Cette fonctionnalité n\'est pas encore implémentée');
+      }
         
     });
     button.innerHTML=`
@@ -107,6 +116,7 @@ const btnicon = {
       'title': 'Nouvelle Discussion',
       onclick: (e) => {
         e.preventDefault()
+        setActiveSidebarButton('add');
          if (window.conversationPollingInterval) clearInterval(window.conversationPollingInterval); 
         const barre = document.getElementById('sidebar-content'); 
         if (barre) {
@@ -145,6 +155,7 @@ const btnicon = {
       'title': 'Paramètres',
        onclick: () => {
       showSettingsSidebar();
+      setActiveSidebarButton('btnsettings');
     }
     });
     button.innerHTML=`
@@ -439,4 +450,25 @@ const btnicon = {
     
   })()
 };
+
+export function setActiveSidebarButton(activeId) {
+  // Liste des IDs de boutons à gérer
+  const ids = [
+    'btnmessage',
+    'btnstory',
+    'btnchannel',
+    'btngroupe',
+    'btnsettings'
+  ];
+  ids.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      if (id === activeId) {
+        btn.classList.add('btn-sidebar-active');
+      } else {
+        btn.classList.remove('btn-sidebar-active');
+      }
+    }
+  });
+}
 export { btnicon };

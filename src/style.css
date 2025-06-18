@@ -3,3 +3,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.btn-sidebar-active {
+  background-color: #a9c0b2 !important; /* vert WhatsApp */
+  color: white !important;
+  box-shadow: 0 0 0 2px #22c55e33;
+}
